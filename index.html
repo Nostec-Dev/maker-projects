@@ -3,118 +3,141 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Colección de proyectos electrónicos de Nostec: microcontroladores, sensores, pantallas y conexión con el celular.">
 <title>Maker Projects</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Figtree:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
-/* Catalogo de proyectos: una ficha por proyecto, con codigo, estado y enlaces */
+/* Indice tecnico oscuro: encabezado sobre rejilla de puntos, fichas sobrias, etiquetas en monoespaciada */
 :root {
-  --bg: #F2F4F8;
-  --surface: #FFFFFF;
-  --ink: #152030;
-  --muted: #5A6678;
-  --line: #DAE0E9;
-  --accent: #1F5FD1;
-  --accent-ink: #FFFFFF;
-  --chip: #E8EDF5;
-  --good: #17845A; --good-bg: #E3F4EC;
-  --warn: #A86A12; --warn-bg: #FBF0DD;
-  --info: #1F5FD1; --info-bg: #E6EDFB;
-  --font-num: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
-  --font-body: "Figtree", "Segoe UI", Roboto, system-ui, sans-serif;
-  color-scheme: light;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #0D131B; --surface: #151D28; --ink: #E6EBF2; --muted: #93A0B3; --line: #253142;
-    --accent: #6E9CFF; --accent-ink: #0D131B; --chip: #1E2836;
-    --good: #3CC488; --good-bg: #12291F; --warn: #E6A83E; --warn-bg: #2E2312; --info: #6E9CFF; --info-bg: #17233A;
-    color-scheme: dark;
-  }
-}
-:root[data-theme="dark"] {
-  --bg: #0D131B; --surface: #151D28; --ink: #E6EBF2; --muted: #93A0B3; --line: #253142;
-  --accent: #6E9CFF; --accent-ink: #0D131B; --chip: #1E2836;
-  --good: #3CC488; --good-bg: #12291F; --warn: #E6A83E; --warn-bg: #2E2312; --info: #6E9CFF; --info-bg: #17233A;
+  --bg: #07090C;
+  --surface: #0D1117;
+  --surface-2: #121821;
+  --line: #1C232D;
+  --line-strong: #2A3441;
+  --ink: #E6EAF0;
+  --muted: #8A94A3;
+  --faint: #5A6472;
+  --accent: #5EA8E8;
+  --accent-ink: #06121F;
+  --good: #46C08A;
+  --warn: #D9A441;
+  --font-sans: "IBM Plex Sans", "Segoe UI", Roboto, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; }
 body {
   background: var(--bg); color: var(--ink);
-  font: 15px/1.55 var(--font-body);
-  padding-left: max(16px, env(safe-area-inset-left, 0px));
-  padding-right: max(16px, env(safe-area-inset-right, 0px));
-  padding-block: max(28px, env(safe-area-inset-top, 0px)) max(32px, env(safe-area-inset-bottom, 0px));
+  font: 15px/1.6 var(--font-sans);
+  -webkit-font-smoothing: antialiased;
 }
-.wrap { max-width: 1000px; margin: 0 auto; display: grid; gap: 24px; }
-header { display: grid; gap: 6px; border-bottom: 1px solid var(--line); padding-bottom: 20px; }
-.eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
-h1 { margin: 0; font: 700 clamp(36px, 7vw, 56px)/1 var(--font-num); text-transform: uppercase; letter-spacing: 0.01em; text-wrap: balance; }
-header p { margin: 0; color: var(--muted); max-width: 62ch; }
+.band {
+  border-bottom: 1px solid var(--line);
+  background-color: var(--bg);
+  background-image: radial-gradient(var(--line-strong) 1px, transparent 1px);
+  background-size: 22px 22px;
+  background-position: -11px -11px;
+}
+.inner {
+  max-width: 1040px; margin: 0 auto;
+  padding-left: max(20px, env(safe-area-inset-left, 0px));
+  padding-right: max(20px, env(safe-area-inset-right, 0px));
+}
+header .inner { padding-block: 56px 40px; display: grid; gap: 14px; }
+.eyebrow { font: 500 12px/1 var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); }
+h1 { margin: 0; font: 600 clamp(34px, 6vw, 48px)/1.08 var(--font-sans); letter-spacing: -0.02em; text-wrap: balance; }
+.lead { margin: 0; color: var(--muted); font-size: 17px; max-width: 60ch; }
+.facts { display: flex; flex-wrap: wrap; gap: 8px 28px; margin-top: 10px; font: 400 13px/1.4 var(--font-mono); color: var(--faint); }
+.facts b { color: var(--ink); font-weight: 500; font-variant-numeric: tabular-nums; }
 
+main .inner { padding-block: 28px 48px; display: grid; gap: 20px; }
 .toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
-.filters { display: flex; flex-wrap: wrap; gap: 6px; }
+.filters { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
 .filters button {
-  font: 600 13px/1 var(--font-body); padding: 8px 12px; border-radius: 999px; cursor: pointer;
-  border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+  font: 500 12px/1 var(--font-mono); letter-spacing: 0.04em; padding: 10px 14px; cursor: pointer;
+  border: 0; border-right: 1px solid var(--line); background: var(--surface); color: var(--muted);
 }
-.filters button[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
-.filters button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.count { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.filters button:last-child { border-right: 0; }
+.filters button:hover { color: var(--ink); }
+.filters button[aria-pressed="true"] { background: var(--surface-2); color: var(--ink); box-shadow: inset 0 -2px 0 var(--accent); }
+.search { display: flex; align-items: center; gap: 12px; }
+input[type="search"] { flex: 1 1 220px; min-width: 0; }
 input[type="search"] {
-  font: 15px var(--font-body); padding: 9px 12px; border-radius: 8px; width: min(260px, 100%);
+  font: 14px var(--font-sans); padding: 9px 12px; border-radius: 6px; width: min(260px, 100%);
   border: 1px solid var(--line); background: var(--surface); color: var(--ink);
 }
+input[type="search"]::placeholder { color: var(--faint); }
+.count { font: 12px var(--font-mono); color: var(--faint); font-variant-numeric: tabular-nums; white-space: nowrap; }
+button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 16px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 310px), 1fr)); gap: 16px; }
 .card {
-  background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
-  padding: 18px; display: grid; gap: 12px; align-content: start; min-width: 0;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 8px;
+  padding: 20px; display: grid; gap: 14px; align-content: start; min-width: 0;
+  transition: border-color 0.15s ease;
 }
-.card-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-.code { font: 700 22px/1 var(--font-num); color: var(--accent); letter-spacing: 0.02em; font-variant-numeric: tabular-nums; }
-.state { font-size: 12px; font-weight: 600; padding: 4px 9px; border-radius: 999px; background: var(--info-bg); color: var(--info); white-space: nowrap; }
-.state[data-k="good"] { background: var(--good-bg); color: var(--good); }
-.state[data-k="warn"] { background: var(--warn-bg); color: var(--warn); }
-.card h2 { margin: 0; font: 700 26px/1.05 var(--font-num); text-wrap: balance; }
-.meta { font-size: 13px; color: var(--muted); }
-.card p { margin: 0; }
+.card:hover { border-color: var(--line-strong); }
+.card-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; font: 500 12px/1 var(--font-mono); }
+.code { color: var(--accent); letter-spacing: 0.06em; }
+.state { display: inline-flex; align-items: center; gap: 7px; color: var(--muted); }
+.state::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+.state[data-k="good"]::before { background: var(--good); }
+.state[data-k="warn"]::before { background: var(--warn); }
+.card h2 { margin: 0; font: 600 20px/1.25 var(--font-sans); letter-spacing: -0.01em; text-wrap: balance; }
+.meta { font: 12px/1.4 var(--font-mono); color: var(--faint); margin-top: -8px; }
+.card p { margin: 0; color: var(--muted); font-size: 14.5px; }
 .tags { display: flex; flex-wrap: wrap; gap: 6px; }
-.tags span { font-size: 12px; padding: 3px 8px; border-radius: 6px; background: var(--chip); color: var(--ink); }
-.links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 2px; }
+.tags span { font: 12px/1 var(--font-mono); padding: 6px 8px; border-radius: 4px; border: 1px solid var(--line); color: var(--ink); background: var(--surface-2); }
+.links { display: flex; flex-wrap: wrap; gap: 8px; padding-top: 14px; border-top: 1px solid var(--line); }
 .links a {
-  font: 600 14px/1 var(--font-body); padding: 10px 14px; border-radius: 8px; text-decoration: none;
-  border: 1px solid var(--line); color: var(--ink);
+  font: 500 13.5px/1 var(--font-sans); padding: 10px 14px; border-radius: 6px; text-decoration: none;
+  border: 1px solid var(--line-strong); color: var(--ink);
 }
-.links a.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
 .links a:hover { border-color: var(--accent); }
-.empty { color: var(--muted); padding: 24px 0; }
-footer { color: var(--muted); font-size: 13px; border-top: 1px solid var(--line); padding-top: 16px; }
+.links a.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.links a.primary:hover { filter: brightness(1.08); }
+.empty { color: var(--faint); font: 13px var(--font-mono); padding: 24px 0; }
+
+footer { border-top: 1px solid var(--line); }
+footer .inner { padding-block: 22px 32px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; font: 12px var(--font-mono); color: var(--faint); }
+footer a { color: var(--muted); text-decoration: none; }
+footer a:hover { color: var(--ink); }
+@media (prefers-reduced-motion: reduce) { .card { transition: none; } }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <span class="eyebrow">Nostec · Colección de proyectos electrónicos</span>
+<header class="band">
+  <div class="inner">
+    <span class="eyebrow">Nostec / Maker Projects</span>
     <h1>Maker Projects</h1>
-    <p>Proyectos electrónicos pequeños con microcontroladores, sensores, pantallas y conexión con el celular. Cada uno tiene un código (P01, P02…), su página, su firmware y su documentación.</p>
-  </header>
-
-  <div class="toolbar">
-    <div class="filters" id="filters" role="group" aria-label="Filtrar por estado"></div>
-    <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
-      <input type="search" id="q" placeholder="Buscar proyecto" aria-label="Buscar proyecto">
-      <span class="count" id="count"></span>
-    </div>
+    <p class="lead">Colección de proyectos electrónicos con microcontroladores, sensores, pantallas y conexión con el celular. Cada proyecto tiene su código, su página, su firmware y su documentación.</p>
+    <div class="facts" id="facts"></div>
   </div>
+</header>
 
-  <main class="grid" id="grid"></main>
-  <div class="empty" id="empty" hidden>No hay proyectos con ese filtro.</div>
+<main>
+  <div class="inner">
+    <div class="toolbar">
+      <div class="filters" id="filters" role="group" aria-label="Filtrar por estado"></div>
+      <div class="search">
+        <input type="search" id="q" placeholder="Buscar proyecto o tecnología" aria-label="Buscar proyecto o tecnología">
+        <span class="count" id="count"></span>
+      </div>
+    </div>
+    <div class="grid" id="grid"></div>
+    <div class="empty" id="empty" hidden>No hay proyectos con ese filtro.</div>
+  </div>
+</main>
 
-  <footer>Para agregar un proyecto: crea su carpeta con el siguiente número (por ejemplo <code>02-nombre-del-proyecto</code>) y añade su ficha en la lista <code>PROYECTOS</code> de este archivo.</footer>
-</div>
+<footer>
+  <div class="inner">
+    <span>Nostec · Maker Projects</span>
+    <a href="https://github.com/Nostec-Dev/maker-projects" target="_blank" rel="noopener">github.com/Nostec-Dev/maker-projects</a>
+  </div>
+</footer>
 
 <script>
 // ===================== LISTA DE PROYECTOS =====================
@@ -178,7 +201,7 @@ function pintar() {
     const links = el("div", { class: "links" });
     links.append(el("a", { class: "primary", href: p.carpeta + "/" }, p.abrir || "Abrir página"));
     const codigo = enlaceCodigo(p.carpeta);
-    if (codigo) links.append(el("a", { href: codigo, target: "_blank", rel: "noopener" }, "Código y documentación"));
+    if (codigo) links.append(el("a", { href: codigo, target: "_blank", rel: "noopener" }, "Código"));
     card.append(top, el("h2", {}, p.nombre), el("div", { class: "meta" }, [p.area, fecha].filter(Boolean).join(" · ")), el("p", {}, p.resumen), tags, links);
     grid.append(card);
   });
@@ -196,6 +219,16 @@ filtros.forEach((f) => {
   $("filters").append(b);
 });
 $("q").addEventListener("input", pintar);
+
+// Resumen del encabezado
+const tecnologias = new Set(PROYECTOS.flatMap((p) => p.tecnologias));
+const anios = PROYECTOS.map((p) => (p.fecha || "").slice(0, 4)).filter(Boolean).sort();
+const dosCifras = (n) => String(n).padStart(2, "0");
+[["Proyectos", dosCifras(PROYECTOS.length)], ["Tecnologías", dosCifras(tecnologias.size)], ["Desde", anios[0] || "—"]].forEach(([k, v]) => {
+  const d = el("span", {}, k + " ");
+  d.append(el("b", {}, v));
+  $("facts").append(d);
+});
 pintar();
 </script>
 </body>
