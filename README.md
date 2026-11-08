@@ -8,9 +8,9 @@ Cada proyecto tiene su propia dirección, por ejemplo https://nostec-dev.github.
 
 ## Proyectos
 
-| Código | Proyecto | Carpeta | Estado |
-|---|---|---|---|
-| P01 | Ejercitador de fuerza | [`01-ejercitador-fuerza`](01-ejercitador-fuerza/) | En pruebas |
+| Código | Proyecto | Carpeta |
+|---|---|---|
+| P01 | Ejercitador de fuerza | [`01-ejercitador-fuerza`](01-ejercitador-fuerza/) |
 
 ## Cómo está organizado
 
@@ -33,5 +33,3 @@ maker-projects/
 3. **Contenido:** siempre `index.html` y `README.md`. Agrega `firmware/` e `img/` cuando los tenga.
 4. **Firmware:** cada `.ino` va dentro de una carpeta con su mismo nombre, como pide Arduino IDE.
 5. **Lista:** agrega la ficha del proyecto en `PROYECTOS`, dentro de `index.html`, y una fila en la tabla de arriba.
-
-Estados posibles: **En desarrollo**, **En pruebas**, **Terminado**.

@@ -54,7 +54,7 @@ h1 { margin: 0; font: 600 clamp(34px, 6vw, 48px)/1.08 var(--font-sans); letter-s
 .facts b { color: var(--ink); font-weight: 500; font-variant-numeric: tabular-nums; }
 
 main .inner { padding-block: 28px 48px; display: grid; gap: 20px; }
-.toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+.toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 12px; }
 .filters { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
 .filters button {
   font: 500 12px/1 var(--font-mono); letter-spacing: 0.04em; padding: 10px 14px; cursor: pointer;
@@ -121,14 +121,13 @@ footer a:hover { color: var(--ink); }
 <main>
   <div class="inner">
     <div class="toolbar">
-      <div class="filters" id="filters" role="group" aria-label="Filtrar por estado"></div>
       <div class="search">
         <input type="search" id="q" placeholder="Buscar proyecto o tecnología" aria-label="Buscar proyecto o tecnología">
         <span class="count" id="count"></span>
       </div>
     </div>
     <div class="grid" id="grid"></div>
-    <div class="empty" id="empty" hidden>No hay proyectos con ese filtro.</div>
+    <div class="empty" id="empty" hidden>No hay proyectos con esa búsqueda.</div>
   </div>
 </main>
 
@@ -149,7 +148,6 @@ const PROYECTOS = [
     nombre: "Ejercitador de fuerza",
     area: "Rehabilitación",
     fecha: "2026-11",
-    estado: "En pruebas",          // En desarrollo | En pruebas | Terminado
     resumen: "Mide la fuerza de agarre con una celda de 20 kg. Muestra kg, newtons y tiempo sostenido en una pantalla OLED y en el celular por Bluetooth, con recomendaciones en vivo.",
     tecnologias: ["ESP32", "HX711", "OLED I2C", "Bluetooth BLE"],
     abrir: "Abrir panel en vivo",
@@ -157,7 +155,6 @@ const PROYECTOS = [
 ];
 // ==============================================================
 
-const TIPO_ESTADO = { "Terminado": "good", "En pruebas": "info", "En desarrollo": "warn" };
 const MESES = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];
 
 // Enlace al codigo en GitHub, deducido de la direccion de GitHub Pages
@@ -169,8 +166,6 @@ function enlaceCodigo(carpeta) {
   return repo ? "https://github.com/" + usuario + "/" + repo + "/tree/main/" + carpeta : null;
 }
 
-const filtros = ["Todos", "En desarrollo", "En pruebas", "Terminado"];
-let filtro = "Todos";
 const $ = (id) => document.getElementById(id);
 
 function el(tag, attrs, texto) {
@@ -185,7 +180,6 @@ function pintar() {
   const lista = PROYECTOS
     .slice()
     .sort((a, b) => a.codigo.localeCompare(b.codigo))
-    .filter((p) => filtro === "Todos" || p.estado === filtro)
     .filter((p) => !q || [p.codigo, p.nombre, p.area, p.resumen, ...p.tecnologias].join(" ").toLowerCase().includes(q));
 
   const grid = $("grid");
@@ -193,7 +187,7 @@ function pintar() {
   lista.forEach((p) => {
     const card = el("article", { class: "card" });
     const top = el("div", { class: "card-top" });
-    top.append(el("span", { class: "code" }, p.codigo), el("span", { class: "state", "data-k": TIPO_ESTADO[p.estado] || "info" }, p.estado));
+    top.append(el("span", { class: "code" }, p.codigo));
     const [anio, mes] = (p.fecha || "").split("-");
     const fecha = mes ? MESES[parseInt(mes, 10) - 1] + " " + anio : anio;
     const tags = el("div", { class: "tags" });
@@ -209,22 +203,12 @@ function pintar() {
   $("count").textContent = lista.length + (lista.length === 1 ? " proyecto" : " proyectos");
 }
 
-filtros.forEach((f) => {
-  const b = el("button", { type: "button", "aria-pressed": String(f === filtro) }, f);
-  b.addEventListener("click", () => {
-    filtro = f;
-    document.querySelectorAll("#filters button").forEach((x) => x.setAttribute("aria-pressed", String(x.textContent === f)));
-    pintar();
-  });
-  $("filters").append(b);
-});
 $("q").addEventListener("input", pintar);
 
 // Resumen del encabezado
-const tecnologias = new Set(PROYECTOS.flatMap((p) => p.tecnologias));
 const anios = PROYECTOS.map((p) => (p.fecha || "").slice(0, 4)).filter(Boolean).sort();
 const dosCifras = (n) => String(n).padStart(2, "0");
-[["Proyectos", dosCifras(PROYECTOS.length)], ["Tecnologías", dosCifras(tecnologias.size)], ["Desde", anios[0] || "—"]].forEach(([k, v]) => {
+[["Proyectos", dosCifras(PROYECTOS.length)], ["Desde", anios[0] || "—"]].forEach(([k, v]) => {
   const d = el("span", {}, k + " ");
   d.append(el("b", {}, v));
   $("facts").append(d);
