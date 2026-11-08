@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Maker Projects</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Catalogo de proyectos: una ficha por proyecto, con codigo, estado y enlaces */
+:root {
+  --bg: #F2F4F8;
+  --surface: #FFFFFF;
+  --ink: #152030;
+  --muted: #5A6678;
+  --line: #DAE0E9;
+  --accent: #1F5FD1;
+  --accent-ink: #FFFFFF;
+  --chip: #E8EDF5;
+  --good: #17845A; --good-bg: #E3F4EC;
+  --warn: #A86A12; --warn-bg: #FBF0DD;
+  --info: #1F5FD1; --info-bg: #E6EDFB;
+  --font-num: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --font-body: "Figtree", "Segoe UI", Roboto, system-ui, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0D131B; --surface: #151D28; --ink: #E6EBF2; --muted: #93A0B3; --line: #253142;
+    --accent: #6E9CFF; --accent-ink: #0D131B; --chip: #1E2836;
+    --good: #3CC488; --good-bg: #12291F; --warn: #E6A83E; --warn-bg: #2E2312; --info: #6E9CFF; --info-bg: #17233A;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0D131B; --surface: #151D28; --ink: #E6EBF2; --muted: #93A0B3; --line: #253142;
+  --accent: #6E9CFF; --accent-ink: #0D131B; --chip: #1E2836;
+  --good: #3CC488; --good-bg: #12291F; --warn: #E6A83E; --warn-bg: #2E2312; --info: #6E9CFF; --info-bg: #17233A;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--bg); color: var(--ink);
+  font: 15px/1.55 var(--font-body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: max(28px, env(safe-area-inset-top, 0px)) max(32px, env(safe-area-inset-bottom, 0px));
+}
+.wrap { max-width: 1000px; margin: 0 auto; display: grid; gap: 24px; }
+header { display: grid; gap: 6px; border-bottom: 1px solid var(--line); padding-bottom: 20px; }
+.eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+h1 { margin: 0; font: 700 clamp(36px, 7vw, 56px)/1 var(--font-num); text-transform: uppercase; letter-spacing: 0.01em; text-wrap: balance; }
+header p { margin: 0; color: var(--muted); max-width: 62ch; }
+
+.toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+.filters { display: flex; flex-wrap: wrap; gap: 6px; }
+.filters button {
+  font: 600 13px/1 var(--font-body); padding: 8px 12px; border-radius: 999px; cursor: pointer;
+  border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+}
+.filters button[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.filters button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.count { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+input[type="search"] {
+  font: 15px var(--font-body); padding: 9px 12px; border-radius: 8px; width: min(260px, 100%);
+  border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+}
+
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 16px; }
+.card {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+  padding: 18px; display: grid; gap: 12px; align-content: start; min-width: 0;
+}
+.card-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.code { font: 700 22px/1 var(--font-num); color: var(--accent); letter-spacing: 0.02em; font-variant-numeric: tabular-nums; }
+.state { font-size: 12px; font-weight: 600; padding: 4px 9px; border-radius: 999px; background: var(--info-bg); color: var(--info); white-space: nowrap; }
+.state[data-k="good"] { background: var(--good-bg); color: var(--good); }
+.state[data-k="warn"] { background: var(--warn-bg); color: var(--warn); }
+.card h2 { margin: 0; font: 700 26px/1.05 var(--font-num); text-wrap: balance; }
+.meta { font-size: 13px; color: var(--muted); }
+.card p { margin: 0; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.tags span { font-size: 12px; padding: 3px 8px; border-radius: 6px; background: var(--chip); color: var(--ink); }
+.links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 2px; }
+.links a {
+  font: 600 14px/1 var(--font-body); padding: 10px 14px; border-radius: 8px; text-decoration: none;
+  border: 1px solid var(--line); color: var(--ink);
+}
+.links a.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.links a:hover { border-color: var(--accent); }
+.empty { color: var(--muted); padding: 24px 0; }
+footer { color: var(--muted); font-size: 13px; border-top: 1px solid var(--line); padding-top: 16px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Nostec · Colección de proyectos electrónicos</span>
+    <h1>Maker Projects</h1>
+    <p>Proyectos electrónicos pequeños con microcontroladores, sensores, pantallas y conexión con el celular. Cada uno tiene un código (P01, P02…), su página, su firmware y su documentación.</p>
+  </header>
+
+  <div class="toolbar">
+    <div class="filters" id="filters" role="group" aria-label="Filtrar por estado"></div>
+    <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+      <input type="search" id="q" placeholder="Buscar proyecto" aria-label="Buscar proyecto">
+      <span class="count" id="count"></span>
+    </div>
+  </div>
+
+  <main class="grid" id="grid"></main>
+  <div class="empty" id="empty" hidden>No hay proyectos con ese filtro.</div>
+
+  <footer>Para agregar un proyecto: crea su carpeta con el siguiente número (por ejemplo <code>02-nombre-del-proyecto</code>) y añade su ficha en la lista <code>PROYECTOS</code> de este archivo.</footer>
+</div>
+
+<script>
+// ===================== LISTA DE PROYECTOS =====================
+// Agrega un bloque por proyecto. El mas nuevo puede ir al final; la pagina los ordena por codigo.
+const PROYECTOS = [
+  {
+    codigo: "P01",
+    carpeta: "01-ejercitador-fuerza",
+    nombre: "Ejercitador de fuerza",
+    area: "Rehabilitación",
+    fecha: "2026-11",
+    estado: "En pruebas",          // En desarrollo | En pruebas | Terminado
+    resumen: "Mide la fuerza de agarre con una celda de 20 kg. Muestra kg, newtons y tiempo sostenido en una pantalla OLED y en el celular por Bluetooth, con recomendaciones en vivo.",
+    tecnologias: ["ESP32", "HX711", "OLED I2C", "Bluetooth BLE"],
+    abrir: "Abrir panel en vivo",
+  },
+];
+// ==============================================================
+
+const TIPO_ESTADO = { "Terminado": "good", "En pruebas": "info", "En desarrollo": "warn" };
+const MESES = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];
+
+// Enlace al codigo en GitHub, deducido de la direccion de GitHub Pages
+function enlaceCodigo(carpeta) {
+  const host = location.hostname;
+  if (!host.endsWith(".github.io")) return null;
+  const usuario = host.replace(".github.io", "");
+  const repo = location.pathname.split("/").filter(Boolean)[0];
+  return repo ? "https://github.com/" + usuario + "/" + repo + "/tree/main/" + carpeta : null;
+}
+
+const filtros = ["Todos", "En desarrollo", "En pruebas", "Terminado"];
+let filtro = "Todos";
+const $ = (id) => document.getElementById(id);
+
+function el(tag, attrs, texto) {
+  const e = document.createElement(tag);
+  Object.entries(attrs || {}).forEach(([k, v]) => e.setAttribute(k, v));
+  if (texto != null) e.textContent = texto;
+  return e;
+}
+
+function pintar() {
+  const q = $("q").value.trim().toLowerCase();
+  const lista = PROYECTOS
+    .slice()
+    .sort((a, b) => a.codigo.localeCompare(b.codigo))
+    .filter((p) => filtro === "Todos" || p.estado === filtro)
+    .filter((p) => !q || [p.codigo, p.nombre, p.area, p.resumen, ...p.tecnologias].join(" ").toLowerCase().includes(q));
+
+  const grid = $("grid");
+  grid.textContent = "";
+  lista.forEach((p) => {
+    const card = el("article", { class: "card" });
+    const top = el("div", { class: "card-top" });
+    top.append(el("span", { class: "code" }, p.codigo), el("span", { class: "state", "data-k": TIPO_ESTADO[p.estado] || "info" }, p.estado));
+    const [anio, mes] = (p.fecha || "").split("-");
+    const fecha = mes ? MESES[parseInt(mes, 10) - 1] + " " + anio : anio;
+    const tags = el("div", { class: "tags" });
+    p.tecnologias.forEach((t) => tags.append(el("span", {}, t)));
+    const links = el("div", { class: "links" });
+    links.append(el("a", { class: "primary", href: p.carpeta + "/" }, p.abrir || "Abrir página"));
+    const codigo = enlaceCodigo(p.carpeta);
+    if (codigo) links.append(el("a", { href: codigo, target: "_blank", rel: "noopener" }, "Código y documentación"));
+    card.append(top, el("h2", {}, p.nombre), el("div", { class: "meta" }, [p.area, fecha].filter(Boolean).join(" · ")), el("p", {}, p.resumen), tags, links);
+    grid.append(card);
+  });
+  $("empty").hidden = lista.length > 0;
+  $("count").textContent = lista.length + (lista.length === 1 ? " proyecto" : " proyectos");
+}
+
+filtros.forEach((f) => {
+  const b = el("button", { type: "button", "aria-pressed": String(f === filtro) }, f);
+  b.addEventListener("click", () => {
+    filtro = f;
+    document.querySelectorAll("#filters button").forEach((x) => x.setAttribute("aria-pressed", String(x.textContent === f)));
+    pintar();
+  });
+  $("filters").append(b);
+});
+$("q").addEventListener("input", pintar);
+pintar();
+</script>
+</body>
+</html>
