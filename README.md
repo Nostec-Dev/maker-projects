@@ -8,9 +8,9 @@ Cada proyecto tiene su propia dirección, por ejemplo https://nostec-dev.github.
 
 ## Proyectos
 
-| Código | Proyecto | Carpeta |
-|---|---|---|
-| P01 | Ejercitador de fuerza | [`01-ejercitador-fuerza`](01-ejercitador-fuerza/) |
+| Código | Proyecto | Categorías | Carpeta |
+|---|---|---|---|
+| P01 | Ejercitador de fuerza | Instrumentación · IoT y Bluetooth | [`01-ejercitador-fuerza`](01-ejercitador-fuerza/) |
 
 ## Cómo está organizado
 
@@ -32,4 +32,6 @@ maker-projects/
 2. **Carpeta:** el número con dos cifras y un nombre corto en minúsculas, separado con guiones: `02-monitor-co`, `03-red-malla-agricola`.
 3. **Contenido:** siempre `index.html` y `README.md`. Agrega `firmware/` e `img/` cuando los tenga.
 4. **Firmware:** cada `.ino` va dentro de una carpeta con su mismo nombre, como pide Arduino IDE.
-5. **Lista:** agrega la ficha del proyecto en `PROYECTOS`, dentro de `index.html`, y una fila en la tabla de arriba.
+5. **Foto:** una imagen horizontal 4:3 (1200 × 900) en `img/portada.jpg`; se muestra en la ficha.
+6. **Categorías:** una o varias de Instrumentación, IoT y Bluetooth, Control, Potencia y Comunicaciones.
+7. **Lista:** agrega la ficha del proyecto en `PROYECTOS`, dentro de `index.html`, y una fila en la tabla de arriba.

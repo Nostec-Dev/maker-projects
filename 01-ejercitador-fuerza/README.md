@@ -2,7 +2,9 @@
 
 Ejercitador de agarre para rehabilitación. Una celda de carga de 20 kg mide la fuerza; el ESP32 la muestra en una pantalla OLED y la envía por Bluetooth a una página web con lecturas en vivo y recomendaciones.
 
-**Fecha:** noviembre de 2026
+**Categorías:** Instrumentación · IoT y Bluetooth · **Fecha:** noviembre de 2026
+
+![Ejercitador terminado](img/portada.jpg)
 
 ![Pantalla OLED](img/pantalla-oled.png)
 
