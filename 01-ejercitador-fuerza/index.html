@@ -328,6 +328,8 @@ footer { color: var(--muted); font-size: 13px; max-width: 70ch; }
 
   // ---------- Recibir una lectura ----------
   function recibir(kg, n, s) {
+    kg = Math.max(0, kg);   // nunca negativo
+    n = Math.max(0, n);
     const ahora = performance.now();
     estado.ultimo = { kg, n, s };
     estado.ultimoMs = ahora;

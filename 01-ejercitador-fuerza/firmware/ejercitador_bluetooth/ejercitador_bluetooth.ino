@@ -369,7 +369,9 @@ void loop() {
   }
 
   float kg = celda.get_units(LECTURAS);
-  if (abs(kg) < ZONA_CERO_KG) {
+  // Nunca negativo: cualquier valor por debajo de la zona de cero se muestra como 0.
+  // (Los negativos aparecen si se hizo el cero con la mano en el agarre o por deriva de la celda.)
+  if (kg < ZONA_CERO_KG) {
     kg = 0;
   }
 
