@@ -158,6 +158,25 @@ input[type="number"] {
   border: 1px solid var(--line); background: var(--bg); color: var(--ink); font-variant-numeric: tabular-nums;
 }
 .row-btns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+
+/* Informe */
+.report-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 10px; }
+@media (max-width: 760px) { .report-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 420px) { .report-grid { grid-template-columns: minmax(0, 1fr); } }
+.rfield { display: grid; gap: 4px; min-width: 0; }
+.rfield.wide { grid-column: 1 / -1; }
+.rfield label { font-size: 13px; color: var(--muted); }
+.rfield input, .rfield textarea {
+  width: 100%; font: 15px/1.4 var(--font-body); padding: 9px 10px; border-radius: 8px;
+  border: 1px solid var(--line); background: var(--bg); color: var(--ink);
+}
+.rfield textarea { min-height: 64px; resize: vertical; }
+.rfield input[aria-invalid="true"] { border-color: var(--bad); }
+.report-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 14px; }
+.report-msg { font-size: 14px; color: var(--muted); }
+.report-msg[data-k="bad"] { color: var(--bad); }
+.report-msg[data-k="good"] { color: var(--good); }
+.privacy { font-size: 12px; color: var(--muted); margin: 8px 0 0; }
 footer { color: var(--muted); font-size: 13px; max-width: 70ch; }
 @media (prefers-reduced-motion: reduce) { .bar .fill, .holdbar div { transition: none; } }
 </style>
@@ -269,11 +288,50 @@ footer { color: var(--muted); font-size: 13px; max-width: 70ch; }
     </section>
   </div>
 
+  <section class="panel" aria-labelledby="repTitle">
+    <div class="label" id="repTitle">Informe de la sesión</div>
+    <form id="reportForm" novalidate>
+      <div class="report-grid">
+        <div class="rfield wide">
+          <label for="pNombre">Nombre completo del paciente</label>
+          <input type="text" id="pNombre" autocomplete="off" maxlength="80" required>
+        </div>
+        <div class="rfield">
+          <label for="pCedula">Cédula</label>
+          <input type="text" id="pCedula" inputmode="numeric" autocomplete="off" maxlength="15" required>
+        </div>
+        <div class="rfield">
+          <label for="pSesion">Sesión N.º</label>
+          <input type="number" id="pSesion" min="1" max="999" step="1" value="1" required>
+        </div>
+        <div class="rfield">
+          <label for="pFecha">Fecha</label>
+          <input type="date" id="pFecha" required>
+        </div>
+        <div class="rfield">
+          <label for="pResp">Responsable (opcional)</label>
+          <input type="text" id="pResp" autocomplete="off" maxlength="60">
+        </div>
+        <div class="rfield wide">
+          <label for="pObs">Observaciones (opcional)</label>
+          <textarea id="pObs" maxlength="600"></textarea>
+        </div>
+      </div>
+      <div class="report-foot">
+        <button class="primary" type="submit" id="btnInforme">Descargar informe</button>
+        <span class="report-msg" id="reportMsg" role="status"></span>
+      </div>
+      <p class="privacy">El PDF se genera en este dispositivo. El nombre y la cédula no se envían ni se guardan en ningún lado.</p>
+    </form>
+  </section>
+
   <footer>
     Las recomendaciones son orientativas y se basan solo en la fuerza y el tiempo medidos. Sigue las indicaciones de tu fisioterapeuta. Si sientes dolor, suelta y detén el ejercicio.
   </footer>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <script>
 (() => {
   const UUID_SERVICIO = "6e400001-b5a3-f393-e0a9-e50e24dcca9e";
@@ -324,6 +382,9 @@ footer { color: var(--muted); font-size: 13px; max-width: 70ch; }
     reps: [],             // {pico, prom, cv, dur, ok, fin}
     actual: null,         // apretón en curso
     descansoHasta: 0,
+    inicioSesion: null,   // Date de la primera lectura de la sesion
+    ultimaLectura: null,  // Date de la ultima lectura
+    registro: [],         // {seg, kg} cada medio segundo, para la grafica del informe
   };
 
   // ---------- Recibir una lectura ----------
@@ -334,6 +395,12 @@ footer { color: var(--muted); font-size: 13px; max-width: 70ch; }
     estado.ultimo = { kg, n, s };
     estado.ultimoMs = ahora;
     estado.muestras.push({ t: ahora, kg });
+    const reloj = new Date();
+    if (!estado.inicioSesion) estado.inicioSesion = reloj;
+    estado.ultimaLectura = reloj;
+    const seg = (reloj - estado.inicioSesion) / 1000;
+    const prev = estado.registro[estado.registro.length - 1];
+    if (!prev || seg - prev.seg >= 0.5 || (kg > 0) !== (prev.kg > 0)) estado.registro.push({ seg, kg });
     while (estado.muestras.length && ahora - estado.muestras[0].t > VENTANA_MS + 1000) estado.muestras.shift();
     seguirRepeticion(kg, s, ahora);
     pintarLectura();
@@ -352,7 +419,7 @@ footer { color: var(--muted); font-size: 13px; max-width: 70ch; }
       const prom = a.suma / a.cuenta;
       const cv = prom > 0 ? Math.sqrt(Math.max(0, a.suma2 / a.cuenta - prom * prom)) / prom : 0;
       const ok = a.dur >= metas.s && prom >= metas.kg * 0.8;
-      estado.reps.push({ pico: a.pico, prom, cv, dur: a.dur, ok, fin: ahora });
+      estado.reps.push({ pico: a.pico, prom, cv, dur: a.dur, ok, fin: ahora, hora: new Date() });
       if (estado.reps.length % metas.reps === 0) estado.descansoHasta = ahora + metas.rest * 1000;
       pintarSesion();
       return;
@@ -672,8 +739,197 @@ footer { color: var(--muted); font-size: 13px; max-width: 70ch; }
 
   function reiniciarSesion() {
     estado.reps = []; estado.actual = null; estado.descansoHasta = 0; estado.muestras = [];
+    estado.inicioSesion = null; estado.ultimaLectura = null; estado.registro = [];
     pintarSesion(); recomendar();
   }
+
+  // ---------- Informe PDF ----------
+  const rf = { nombre: $("pNombre"), cedula: $("pCedula"), sesion: $("pSesion"), fecha: $("pFecha"), resp: $("pResp"), obs: $("pObs"), msg: $("reportMsg") };
+  (function fechaHoy() {
+    const d = new Date();
+    rf.fecha.value = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+  })();
+
+  function avisoInforme(texto, tipo) { rf.msg.textContent = texto; rf.msg.dataset.k = tipo || ""; }
+  const hora = (d) => d ? d.toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false }) : "-";
+  const num = (v, d) => v.toFixed(d).replace(".", ",");
+  function duracion(seg) {
+    seg = Math.max(0, Math.round(seg));
+    const m = Math.floor(seg / 60), s = seg % 60;
+    return m ? m + " min " + s + " s" : s + " s";
+  }
+
+  // Conclusiones automaticas de la sesion (mismas reglas que las recomendaciones en vivo)
+  function conclusiones() {
+    const r = estado.reps, out = [];
+    const ok = r.filter((x) => x.ok).length;
+    out.push("Se completaron " + r.length + (r.length === 1 ? " repetición; " : " repeticiones; ") + ok + " cumplieron la meta de " + num(metas.kg, 1) + " kg durante " + metas.s + " s (" + Math.round(ok / r.length * 100) + " %).");
+    if (r.length >= 6) {
+      const ini = promedio(r.slice(0, 3).map((x) => x.pico)), fin = promedio(r.slice(-3).map((x) => x.pico));
+      const cambio = ini > 0 ? (fin / ini - 1) * 100 : 0;
+      if (cambio <= -20) out.push("La fuerza pico bajó " + Math.round(-cambio) + " % entre las primeras y las últimas repeticiones: señal de cansancio. Conviene más descanso entre series o menos repeticiones.");
+      else if (cambio <= -5) out.push("La fuerza pico bajó levemente, " + Math.round(-cambio) + " %, entre las primeras y las últimas repeticiones.");
+      else out.push("La fuerza pico se mantuvo durante la sesión (cambio de " + (cambio >= 0 ? "+" : "") + Math.round(cambio) + " % entre las primeras y las últimas repeticiones).");
+    }
+    const cortas = r.filter((x) => x.dur < metas.s).length;
+    if (cortas) out.push(cortas === 1 ? "1 repetición no alcanzó el tiempo objetivo de " + metas.s + " s." : cortas + " repeticiones no alcanzaron el tiempo objetivo de " + metas.s + " s.");
+    const variables = r.filter((x) => x.cv >= 0.15).length;
+    if (variables) out.push(variables === 1 ? "En 1 repetición la fuerza varió mucho mientras se sostenía." : "En " + variables + " repeticiones la fuerza varió mucho mientras se sostenía.");
+    const ult5 = r.slice(-5);
+    if (ult5.length === 5 && ult5.every((x) => x.ok && x.cv < 0.12)) out.push("Las últimas 5 repeticiones cumplieron la meta con fuerza estable. Se puede considerar subir la meta a " + num(metas.kg + 0.5, 1) + " kg si el fisioterapeuta lo aprueba.");
+    return out;
+  }
+
+  function generarInforme(e) {
+    e.preventDefault();
+    const nombre = rf.nombre.value.trim().replace(/\s+/g, " ");
+    const cedula = rf.cedula.value.replace(/[^0-9]/g, "");
+    const sesion = parseInt(rf.sesion.value, 10);
+    const fecha = rf.fecha.value;
+    const faltan = [];
+    [[rf.nombre, nombre.length >= 3, "nombre"], [rf.cedula, cedula.length >= 5, "cédula"], [rf.sesion, sesion >= 1, "sesión"], [rf.fecha, !!fecha, "fecha"]].forEach(([el, bien, n]) => {
+      el.setAttribute("aria-invalid", String(!bien)); if (!bien) faltan.push(n);
+    });
+    if (faltan.length) { avisoInforme("Completa: " + faltan.join(", ") + ".", "bad"); return; }
+    if (!estado.reps.length) { avisoInforme("Aún no hay repeticiones en esta sesión. Haz al menos una antes de descargar el informe.", "bad"); return; }
+    if (!window.jspdf || !window.jspdf.jsPDF) { avisoInforme("No se pudo cargar el generador de PDF. Revisa la conexión a internet y recarga la página.", "bad"); return; }
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: "mm", format: "a4" });
+    const W = 210, M = 16, AN = W - 2 * M;
+    const AZUL = [31, 95, 209], TINTA = [21, 32, 48], GRIS = [90, 102, 120], LINEA = [218, 224, 233], VERDE = [23, 132, 90], AMBAR = [168, 106, 18];
+    const [fy, fm, fd] = fecha.split("-");
+    const fechaTxt = fd + "/" + fm + "/" + fy;
+    const r = estado.reps;
+    let y = M;
+
+    // Encabezado
+    doc.setFillColor(...AZUL); doc.rect(0, 0, W, 4, "F");
+    y = 16;
+    doc.setFont("helvetica", "bold"); doc.setFontSize(18); doc.setTextColor(...TINTA);
+    doc.text("Informe de sesión", M, y);
+    doc.setFont("helvetica", "normal"); doc.setFontSize(10); doc.setTextColor(...GRIS);
+    doc.text("Ejercitador de fuerza de agarre", M, y + 6);
+    doc.text("Nostec · Maker Projects", W - M, y, { align: "right" });
+    doc.text("Sesión N.º " + sesion, W - M, y + 6, { align: "right" });
+    y += 12;
+    doc.setDrawColor(...LINEA); doc.setLineWidth(0.3); doc.line(M, y, W - M, y);
+    y += 7;
+
+    // Datos del paciente
+    function bloqueDatos(titulo, filas, x, ancho) {
+      let yy = y;
+      doc.setFont("helvetica", "bold"); doc.setFontSize(9); doc.setTextColor(...AZUL);
+      doc.text(titulo.toUpperCase(), x, yy); yy += 5.5;
+      filas.forEach(([k, v]) => {
+        doc.setFont("helvetica", "normal"); doc.setFontSize(9.5); doc.setTextColor(...GRIS); doc.text(k, x, yy);
+        doc.setFont("helvetica", "bold"); doc.setTextColor(...TINTA);
+        const lineas = doc.splitTextToSize(String(v), ancho - 34);
+        doc.text(lineas, x + 34, yy);
+        yy += 5.5 * lineas.length;
+      });
+      return yy;
+    }
+    const inicio = estado.inicioSesion, fin = estado.ultimaLectura;
+    const cedulaTxt = cedula.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    const y1 = bloqueDatos("Paciente", [["Nombre", nombre], ["Cédula", cedulaTxt], ["Fecha", fechaTxt], ["Sesión N.º", sesion]].concat(rf.resp.value.trim() ? [["Responsable", rf.resp.value.trim()]] : []), M, AN / 2);
+    const y2 = bloqueDatos("Sesión", [["Hora de inicio", hora(inicio)], ["Hora de fin", hora(fin)], ["Duración", duracion(inicio && fin ? (fin - inicio) / 1000 : 0)], ["Meta de fuerza", num(metas.kg, 1) + " kg (" + num(metas.kg * 9.81, 1) + " N)"], ["Meta de tiempo", metas.s + " s por repetición"]], M + AN / 2 + 4, AN / 2 - 4);
+    y = Math.max(y1, y2) + 3;
+
+    // Resumen en cifras
+    const picoMax = Math.max(...r.map((x) => x.pico));
+    const ok = r.filter((x) => x.ok).length;
+    const cifras = [
+      [String(r.length), "Repeticiones"],
+      [ok + " de " + r.length, "Cumplieron la meta"],
+      [num(picoMax, 2) + " kg", "Fuerza máxima (" + num(picoMax * 9.81, 1) + " N)"],
+      [num(promedio(r.map((x) => x.pico)), 2) + " kg", "Promedio de picos"],
+      [num(Math.max(...r.map((x) => x.dur)), 1) + " s", "Mejor sostenido"],
+      [duracion(r.reduce((a, x) => a + x.dur, 0)), "Tiempo total apretando"],
+    ];
+    const cw = AN / 3, ch = 15;
+    cifras.forEach(([v, k], i) => {
+      const cx = M + (i % 3) * cw, cy = y + Math.floor(i / 3) * (ch + 3);
+      doc.setFillColor(242, 244, 248); doc.roundedRect(cx, cy, cw - 3, ch, 1.5, 1.5, "F");
+      doc.setFont("helvetica", "bold"); doc.setFontSize(13); doc.setTextColor(...TINTA); doc.text(v, cx + 4, cy + 7);
+      doc.setFont("helvetica", "normal"); doc.setFontSize(8.5); doc.setTextColor(...GRIS); doc.text(k, cx + 4, cy + 12);
+    });
+    y += 2 * (ch + 3) + 5;
+
+    // Grafica de toda la sesion
+    doc.setFont("helvetica", "bold"); doc.setFontSize(9); doc.setTextColor(...AZUL);
+    doc.text("FUERZA DURANTE LA SESIÓN", M, y); y += 3;
+    const gx = M + 10, gy = y, gw = AN - 12, gh = 48;
+    const reg = estado.registro;
+    const tFin = Math.max(1, reg.length ? reg[reg.length - 1].seg : 1);
+    const maxK = Math.max(picoMax, metas.kg * 1.2, 1);
+    const paso = maxK > 12 ? 5 : maxK > 6 ? 2 : 1;
+    const tope = Math.ceil(maxK / paso) * paso;
+    const X = (s) => gx + s / tFin * gw, Y = (k) => gy + gh - Math.min(tope, k) / tope * gh;
+    doc.setFontSize(7.5); doc.setFont("helvetica", "normal"); doc.setTextColor(...GRIS); doc.setLineWidth(0.15);
+    for (let v = 0; v <= tope; v += paso) {
+      doc.setDrawColor(...LINEA); doc.line(gx, Y(v), gx + gw, Y(v));
+      doc.text(v + (v === tope ? " kg" : ""), gx - 2, Y(v) + 1, { align: "right" });
+    }
+    const pasoT = tFin > 1200 ? 300 : tFin > 600 ? 120 : tFin > 240 ? 60 : tFin > 90 ? 30 : 10;
+    for (let t = 0; t <= tFin + 0.01; t += pasoT) {
+      const etiqueta = t >= 60 ? Math.floor(t / 60) + ":" + String(Math.round(t % 60)).padStart(2, "0") : Math.round(t) + " s";
+      doc.text(etiqueta, X(t), gy + gh + 4, { align: t === 0 ? "left" : "center" });
+    }
+    doc.setDrawColor(...TINTA); doc.setLineDashPattern([1.2, 1.2], 0); doc.setLineWidth(0.3);
+    doc.line(gx, Y(metas.kg), gx + gw, Y(metas.kg)); doc.setLineDashPattern([], 0);
+    doc.setDrawColor(...AZUL); doc.setLineWidth(0.45);
+    for (let i = 1; i < reg.length; i++) doc.line(X(reg[i - 1].seg), Y(reg[i - 1].kg), X(reg[i].seg), Y(reg[i].kg));
+    doc.setFontSize(7.5); doc.setTextColor(...GRIS);
+    doc.text("Línea punteada: meta de " + num(metas.kg, 1) + " kg. Tiempo desde el inicio de la sesión.", gx, gy + gh + 9);
+    y = gy + gh + 15;
+
+    // Tabla de repeticiones
+    doc.setFont("helvetica", "bold"); doc.setFontSize(9); doc.setTextColor(...AZUL);
+    doc.text("DETALLE DE REPETICIONES", M, y); y += 2;
+    doc.autoTable({
+      startY: y, margin: { left: M, right: M, bottom: 20 },
+      head: [["#", "Hora", "Pico (kg)", "Pico (N)", "Promedio (kg)", "Tiempo (s)", "Fuerza", "Meta"]],
+      body: r.map((x, i) => [i + 1, hora(x.hora), num(x.pico, 2), num(x.pico * 9.81, 1), num(x.prom, 2), num(x.dur, 1), x.cv >= 0.15 ? "Variable" : "Estable", x.ok ? "Sí" : "No"]),
+      styles: { font: "helvetica", fontSize: 8.5, cellPadding: 1.6, textColor: TINTA, lineColor: LINEA, lineWidth: 0.1 },
+      headStyles: { fillColor: [236, 240, 247], textColor: TINTA, fontStyle: "bold" },
+      alternateRowStyles: { fillColor: [250, 251, 253] },
+      columnStyles: { 0: { halign: "right", cellWidth: 9 }, 2: { halign: "right" }, 3: { halign: "right" }, 4: { halign: "right" }, 5: { halign: "right" } },
+      didParseCell: (d) => { if (d.section === "body" && d.column.index === 7) { d.cell.styles.textColor = d.cell.raw === "Sí" ? VERDE : AMBAR; d.cell.styles.fontStyle = "bold"; } },
+    });
+    y = doc.lastAutoTable.finalY + 8;
+
+    // Conclusiones y observaciones
+    function seccion(titulo, parrafos) {
+      const alto = 8 + parrafos.reduce((a, t) => a + doc.splitTextToSize(t, AN - 4).length * 4.6 + 1.5, 0);
+      if (y + alto - 6 > 297 - 17) { doc.addPage(); y = M + 4; }   // y es la linea base; el pie empieza en 282 mm
+      doc.setFont("helvetica", "bold"); doc.setFontSize(9); doc.setTextColor(...AZUL); doc.text(titulo, M, y); y += 5.5;
+      doc.setFont("helvetica", "normal"); doc.setFontSize(9.5); doc.setTextColor(...TINTA);
+      parrafos.forEach((t) => { const l = doc.splitTextToSize(t, AN - 4); doc.text("•", M, y); doc.text(l, M + 4, y); y += l.length * 4.6 + 1.5; });
+      y += 3;
+    }
+    seccion("CONCLUSIONES DE LA SESIÓN", conclusiones());
+    const obs = rf.obs.value.trim();
+    if (obs) seccion("OBSERVACIONES", [obs]);
+
+    // Pie en todas las paginas
+    const generado = new Date().toLocaleString("es-CO", { dateStyle: "short", timeStyle: "short" });
+    const total = doc.getNumberOfPages();
+    for (let i = 1; i <= total; i++) {
+      doc.setPage(i);
+      doc.setDrawColor(...LINEA); doc.setLineWidth(0.2); doc.line(M, 297 - 15, W - M, 297 - 15);
+      doc.setFont("helvetica", "normal"); doc.setFontSize(7.5); doc.setTextColor(...GRIS);
+      doc.text("Resultados orientativos basados en la fuerza y el tiempo medidos. No reemplazan la valoración del fisioterapeuta.", M, 297 - 10.5);
+      doc.text("Generado el " + generado + " · " + nombre + " · C.C. " + cedulaTxt, M, 297 - 6.5);
+      doc.text("Página " + i + " de " + total, W - M, 297 - 6.5, { align: "right" });
+    }
+
+    const limpio = (t) => t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^A-Za-z0-9]+/g, "_").replace(/^_|_$/g, "");
+    doc.save("Informe_" + limpio(nombre) + "_Sesion" + sesion + "_" + fecha + ".pdf");
+    avisoInforme("Informe descargado.", "good");
+  }
+  $("reportForm").addEventListener("submit", generarInforme);
+  [rf.nombre, rf.cedula, rf.sesion, rf.fecha].forEach((el) => el.addEventListener("input", () => el.removeAttribute("aria-invalid")));
 
   ui.btnConnect.addEventListener("click", conectar);
   ui.btnDisconnect.addEventListener("click", desconectar);

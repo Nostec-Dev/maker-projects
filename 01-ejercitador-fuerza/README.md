@@ -14,6 +14,7 @@ Ejercitador de agarre para rehabilitación. Una celda de carga de 20 kg mide la 
 - Barra de fuerza de 0 a 20 kg y aviso de sobrecarga.
 - Icono de Bluetooth cuando la página está conectada.
 - En la página: gráfica de los últimos 30 s, registro de cada repetición, metas ajustables y recomendaciones (fuerza, tiempo, descanso y cansancio).
+- **Informe PDF de la sesión:** con nombre, cédula, fecha y número de sesión, horas de inicio y fin, resumen, gráfica de toda la sesión, detalle de cada repetición, conclusiones y observaciones. Se genera en el mismo dispositivo; los datos del paciente no se envían ni se guardan.
 
 ## Componentes
 
