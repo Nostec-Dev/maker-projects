@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Digiflex · Documentación</title>
+<meta name="description" content="Documentación técnica de Digiflex: dispositivo de rehabilitación de agarre para fisioterapia con ESP32, celda de carga, pantalla OLED y aplicación web por Bluetooth.">
+<link rel="icon" href="https://avatars.githubusercontent.com/u/182430294?v=4&amp;s=64">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Digiflex · Nostec">
+<meta property="og:description" content="Dispositivo de rehabilitación de agarre para fisioterapia: celda de carga de 20 kg, ESP32, pantalla OLED y aplicación web por Bluetooth.">
+<meta property="og:image" content="https://nostec-dev.github.io/maker-projects/01-ejercitador-fuerza/img/portada.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Ficha tecnica: indice fijo a la izquierda en escritorio, secciones numeradas en el orden de la plantilla de documentacion */
+:root {
+  --bg: #07090C;
+  --surface: #0D1117;
+  --surface-2: #121821;
+  --line: #1C232D;
+  --line-strong: #2A3441;
+  --ink: #E6EAF0;
+  --muted: #8A94A3;
+  --faint: #5A6472;
+  --accent: #5EA8E8;
+  --accent-ink: #06121F;
+  --pad: #D4A84B;
+  --pad-ink: #1A1305;
+  --good: #46C08A;
+  --font-sans: "IBM Plex Sans", "Segoe UI", Roboto, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--ink); font: 15.5px/1.65 var(--font-sans); -webkit-font-smoothing: antialiased; }
+a { color: var(--accent); }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.inner { max-width: 1120px; margin: 0 auto; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); }
+
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--bg); }
+.nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: color-mix(in srgb, var(--bg) 90%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+.nav .inner { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-block: 12px; }
+.brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); font: 600 15px/1 var(--font-sans); }
+.brand img { width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--line-strong); background: var(--surface-2); object-fit: cover; }
+.crumb { font: 12px/1 var(--font-mono); color: var(--faint); }
+.crumb a { color: var(--muted); text-decoration: none; }
+.crumb a:hover { color: var(--ink); }
+
+/* Encabezado */
+.head { border-bottom: 1px solid var(--line); }
+.head .inner { padding-block: 48px 40px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr); gap: 40px; align-items: center; }
+@media (max-width: 860px) { .head .inner { grid-template-columns: minmax(0, 1fr); gap: 28px; padding-block: 32px; } }
+.kick { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; font: 500 12px/1 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.code { color: var(--pad-ink); background: var(--pad); padding: 4px 6px; border-radius: 3px; letter-spacing: 0.04em; }
+h1 { margin: 14px 0 0; font: 600 clamp(40px, 7vw, 60px)/1.02 var(--font-sans); letter-spacing: -0.035em; }
+.lead { margin: 14px 0 0; font-size: 18px; color: var(--muted); max-width: 54ch; }
+.facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 24px; border-top: 1px solid var(--line); }
+@media (max-width: 480px) { .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.facts div { padding: 12px 12px 0 0; }
+.facts dt { font: 11.5px/1.3 var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); }
+.facts dd { margin: 4px 0 0; font-size: 14.5px; }
+.cta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+.btn { display: inline-flex; align-items: center; text-decoration: none; font: 500 14px/1 var(--font-sans); padding: 12px 16px; border-radius: 6px; border: 1px solid var(--line-strong); color: var(--ink); background: var(--surface); }
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.hero-img { margin: 0; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--surface); }
+.hero-img img { display: block; width: 100%; height: auto; max-width: 100%; }
+.hero-img figcaption { padding: 10px 14px; font: 12px/1.4 var(--font-mono); color: var(--faint); border-top: 1px solid var(--line); }
+
+/* Cuerpo con indice */
+.body { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 48px; padding-block: 48px 64px; }
+@media (max-width: 980px) { .body { grid-template-columns: minmax(0, 1fr); } .toc { display: none; } }
+.toc { position: sticky; top: 88px; align-self: start; }
+.toc p { margin: 0 0 10px; font: 500 11.5px/1 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); }
+.toc ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; border-left: 1px solid var(--line); }
+.toc a { display: grid; grid-template-columns: 26px minmax(0, 1fr); padding: 6px 10px; margin-left: -1px; border-left: 2px solid transparent; text-decoration: none; color: var(--muted); font-size: 14px; }
+.toc a b { font: 500 11px/1.9 var(--font-mono); color: var(--faint); }
+.toc a:hover { color: var(--ink); }
+.toc a.on { color: var(--ink); border-left-color: var(--pad); }
+.toc a.on b { color: var(--pad); }
+
+.doc { display: grid; gap: 56px; min-width: 0; }
+.sec { display: grid; gap: 16px; min-width: 0; }
+.sec-h { display: flex; align-items: baseline; gap: 12px; }
+.sec-h b { font: 500 12px/1 var(--font-mono); color: var(--pad); }
+.sec-h h2 { margin: 0; font: 600 26px/1.2 var(--font-sans); letter-spacing: -0.02em; }
+.sec p { margin: 0; color: var(--muted); max-width: 68ch; }
+.sec p strong, .sec li strong { color: var(--ink); font-weight: 500; }
+.sec h3 { margin: 8px 0 0; font: 500 12px/1.3 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
+.sec ul { margin: 0; padding-left: 18px; color: var(--muted); display: grid; gap: 6px; max-width: 70ch; }
+
+/* Diagrama de bloques */
+.flow-wrap { border: 1px solid var(--line); border-radius: 10px; background: var(--surface); padding: 18px; display: grid; gap: 14px; }
+.flow-label { font: 11.5px/1 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); }
+.flow { display: flex; flex-wrap: wrap; align-items: stretch; gap: 8px; }
+.node { flex: 1 1 140px; min-width: 0; border: 1px solid var(--line-strong); border-radius: 8px; background: var(--surface-2); padding: 10px 12px; }
+.node strong { display: block; font-weight: 600; font-size: 14.5px; }
+.node span { display: block; font: 12px/1.4 var(--font-mono); color: var(--faint); }
+.node.core { border-color: var(--accent); }
+.arrow { align-self: center; color: var(--pad); font: 600 16px/1 var(--font-mono); }
+@media (max-width: 640px) {
+  .flow { flex-direction: column; }
+  .node { flex: none; }
+  .arrow { transform: rotate(90deg); align-self: flex-start; margin-left: 18px; }
+}
+
+/* Tablas */
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr:last-child td { border-bottom: 0; }
+th { font: 500 11.5px/1.3 var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); background: var(--surface); }
+td { color: var(--muted); }
+td:first-child { color: var(--ink); font-weight: 500; }
+td code, p code, li code { font: 12.5px var(--font-mono); color: var(--ink); background: var(--surface-2); border: 1px solid var(--line); padding: 1px 5px; border-radius: 4px; }
+
+/* Cifras */
+.figures { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+@media (max-width: 640px) { .figures { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.fig { padding: 14px; background: var(--surface); border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); margin: 0 -1px -1px 0; }
+.fig b { display: block; font: 600 22px/1.2 var(--font-sans); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.fig span { font: 11.5px/1.3 var(--font-mono); color: var(--faint); }
+
+/* Galeria */
+.gallery { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 760px) { .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 420px) { .gallery { grid-template-columns: minmax(0, 1fr); } }
+.gallery figure { margin: 0; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--surface); display: grid; grid-template-rows: auto 1fr; }
+.gallery a { display: block; aspect-ratio: 3 / 4; background: var(--surface-2); max-width: 100%; }
+.gallery img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.gallery figcaption { padding: 9px 12px; font: 12px/1.4 var(--font-mono); color: var(--faint); border-top: 1px solid var(--line); }
+
+.files { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+@media (max-width: 560px) { .files { grid-template-columns: minmax(0, 1fr); } }
+.file { display: grid; gap: 2px; padding: 14px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); text-decoration: none; color: var(--ink); }
+.file:hover { border-color: var(--accent); }
+.file strong { font-weight: 600; }
+.file span { font: 12px/1.4 var(--font-mono); color: var(--faint); }
+
+.note { border-left: 3px solid var(--pad); background: var(--surface); padding: 12px 14px; border-radius: 0 8px 8px 0; color: var(--muted); font-size: 14.5px; max-width: 70ch; }
+
+footer { border-top: 1px solid var(--line); }
+footer .inner { padding-block: 22px max(30px, env(safe-area-inset-bottom, 0px)); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; font: 12px var(--font-mono); color: var(--faint); }
+footer a { color: var(--muted); text-decoration: none; }
+footer a:hover { color: var(--ink); }
+</style>
+</head>
+<body>
+
+<nav class="nav" aria-label="Navegación">
+  <div class="inner">
+    <a class="brand" href="../../"><img src="https://avatars.githubusercontent.com/u/182430294?v=4&amp;s=96" alt="" width="28" height="28">Nostec</a>
+    <span class="crumb"><a href="../../#proyectos">Desarrollos a medida</a> / P01</span>
+  </div>
+</nav>
+
+<header class="head">
+  <div class="inner">
+    <div>
+      <div class="kick"><span class="code">P01</span> Desarrollo a medida · Fisioterapia</div>
+      <h1>Digiflex</h1>
+      <p class="lead">Dispositivo de rehabilitación de agarre que mide la fuerza de la mano, guía cada repetición en tiempo real y genera un informe de cada sesión.</p>
+      <dl class="facts">
+        <div><dt>Aplicación</dt><dd>Fisioterapia de mano</dd></div>
+        <div><dt>Fecha</dt><dd>Noviembre 2026</dd></div>
+        <div><dt>Plataforma</dt><dd>ESP32 · BLE</dd></div>
+      </dl>
+      <div class="cta">
+        <a class="btn primary" href="../">Abrir panel en vivo</a>
+        <a class="btn" href="https://github.com/Nostec-Dev/maker-projects/tree/main/01-ejercitador-fuerza" target="_blank" rel="noopener">Código en GitHub</a>
+      </div>
+    </div>
+    <figure class="hero-img">
+      <img src="../img/portada.jpg" alt="Digiflex: empuñadura de ejercitador con celda de carga unida por cable a una caja impresa en 3D con pantalla OLED" width="1200" height="900">
+      <figcaption>Equipo terminado: empuñadura con celda de carga y unidad de control con pantalla.</figcaption>
+    </figure>
+  </div>
+</header>
+
+<div class="inner body">
+  <aside class="toc" aria-label="Contenido">
+    <p>Contenido</p>
+    <ol id="toc">
+      <li><a href="#requerimiento"><b>01</b>Requerimiento</a></li>
+      <li><a href="#solucion"><b>02</b>Solución</a></li>
+      <li><a href="#hardware"><b>03</b>Hardware</a></li>
+      <li><a href="#firmware"><b>04</b>Firmware</a></li>
+      <li><a href="#interfaz"><b>05</b>Interfaz</a></li>
+      <li><a href="#resultados"><b>06</b>Pruebas y resultados</a></li>
+      <li><a href="#galeria"><b>07</b>Galería</a></li>
+      <li><a href="#archivos"><b>08</b>Archivos</a></li>
+    </ol>
+  </aside>
+
+  <main class="doc">
+    <section class="sec" id="requerimiento">
+      <div class="sec-h"><b>01</b><h2>Requerimiento</h2></div>
+      <p>Un proyecto de fisioterapia necesitaba una herramienta para las sesiones de rehabilitación de mano que permitiera:</p>
+      <ul>
+        <li><strong>Medir</strong> de forma objetiva la fuerza de agarre del paciente.</li>
+        <li><strong>Controlar</strong> cuánto tiempo sostiene cada apretón frente a una meta.</li>
+        <li><strong>Guiar</strong> al paciente durante el ejercicio, sin que el fisioterapeuta tenga que interpretar números.</li>
+        <li><strong>Registrar</strong> cada sesión con los datos del paciente para hacer seguimiento.</li>
+      </ul>
+    </section>
+
+    <section class="sec" id="solucion">
+      <div class="sec-h"><b>02</b><h2>Solución</h2></div>
+      <p>Se adaptó un ejercitador de resortes de cuatro dedos con una <strong>celda de carga de 20 kg</strong> en la empuñadura. La señal se digitaliza con un <strong>HX711</strong> y la procesa un <strong>ESP32</strong>, alojado en una caja impresa en 3D con una pantalla OLED para la lectura local.</p>
+      <p>El mismo ESP32 transmite las lecturas por <strong>Bluetooth de baja energía</strong> a una aplicación web que funciona en el navegador del celular o del computador, sin instalar nada. La aplicación muestra la fuerza en vivo, cuenta las repeticiones, da recomendaciones y genera el informe en PDF.</p>
+      <div class="flow-wrap" aria-label="Diagrama de bloques">
+        <span class="flow-label">Medición</span>
+        <div class="flow">
+          <div class="node"><strong>Celda de carga</strong><span>20 kg · puente de Wheatstone</span></div>
+          <span class="arrow" aria-hidden="true">→</span>
+          <div class="node"><strong>HX711</strong><span>ADC de 24 bits · ganancia 128</span></div>
+          <span class="arrow" aria-hidden="true">→</span>
+          <div class="node core"><strong>ESP32</strong><span>Procesamiento y calibración</span></div>
+          <span class="arrow" aria-hidden="true">→</span>
+          <div class="node"><strong>Pantalla OLED</strong><span>128 × 64 · I2C</span></div>
+        </div>
+        <span class="flow-label">Conectividad</span>
+        <div class="flow">
+          <div class="node core"><strong>ESP32</strong><span>Servidor BLE</span></div>
+          <span class="arrow" aria-hidden="true">→</span>
+          <div class="node"><strong>Bluetooth BLE</strong><span>≈ 5 lecturas por segundo</span></div>
+          <span class="arrow" aria-hidden="true">→</span>
+          <div class="node"><strong>Aplicación web</strong><span>Web Bluetooth · Chrome / Edge</span></div>
+          <span class="arrow" aria-hidden="true">→</span>
+          <div class="node"><strong>Informe PDF</strong><span>Generado en el dispositivo</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="sec" id="hardware">
+      <div class="sec-h"><b>03</b><h2>Hardware</h2></div>
+      <h3>Componentes</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Componente</th><th>Función</th><th>Detalle</th></tr></thead>
+          <tbody>
+            <tr><td>ESP32 DevKit</td><td>Microcontrolador y comunicación Bluetooth</td><td>Doble núcleo, BLE integrado</td></tr>
+            <tr><td>Módulo HX711</td><td>Convierte la señal de la celda a digital</td><td>XFW-HX711, 24 bits</td></tr>
+            <tr><td>Celda de carga</td><td>Sensor de fuerza en la empuñadura</td><td>Capacidad de 20 kg</td></tr>
+            <tr><td>Pantalla OLED</td><td>Lectura local de fuerza, tiempo y estado</td><td>0,96", 128 × 64, SSD1306</td></tr>
+            <tr><td>Ejercitador de resortes</td><td>Estructura mecánica de agarre</td><td>Cuatro pulsadores, uno por dedo</td></tr>
+            <tr><td>Carcasa</td><td>Alojamiento de la electrónica</td><td>Impresión 3D, ventana para la pantalla</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>Conexiones</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Módulo</th><th>Pin</th><th>ESP32</th></tr></thead>
+          <tbody>
+            <tr><td>HX711</td><td>DT / SCK</td><td><code>GPIO 18</code> / <code>GPIO 19</code></td></tr>
+            <tr><td>HX711</td><td>VCC / GND</td><td><code>3V3</code> / <code>GND</code></td></tr>
+            <tr><td>OLED</td><td>SDA / SCK</td><td><code>GPIO 21</code> / <code>GPIO 22</code></td></tr>
+            <tr><td>OLED</td><td>VDD / GND</td><td><code>3V3</code> / <code>GND</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>El HX711 se alimenta a 3,3 V para que su salida de datos sea compatible con las entradas del ESP32 sin adaptadores de nivel.</p>
+    </section>
+
+    <section class="sec" id="firmware">
+      <div class="sec-h"><b>04</b><h2>Firmware</h2></div>
+      <p>Desarrollado en Arduino IDE con las librerías HX711 (Bogdan Necula), Adafruit SSD1306 y la librería BLE incluida en el núcleo del ESP32.</p>
+      <ul>
+        <li><strong>Cero automático</strong> al encender y a pedido desde la aplicación.</li>
+        <li><strong>Calibración persistente:</strong> el factor de conversión se guarda en la memoria flash del ESP32 y sobrevive a los reinicios.</li>
+        <li><strong>Filtrado:</strong> promedio de lecturas y zona muerta de 0,02 kg; nunca reporta valores negativos.</li>
+        <li><strong>Tiempo sostenido</strong> con histéresis: empieza a contar desde 0,20 kg y se detiene por debajo de 0,10 kg, para que el ruido no corte la medición.</li>
+        <li><strong>Bluetooth BLE</strong> con perfil tipo UART de Nordic: envía <code>kg,N,s</code> unas cinco veces por segundo y recibe el comando de cero. Se reanuncia solo al desconectarse.</li>
+        <li><strong>Pantalla:</strong> pantalla de encendido, peso, fuerza en newtons, tiempo, barra de 0 a 20 kg, aviso de sobrecarga e icono de conexión.</li>
+      </ul>
+      <h3>Programas</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Programa</th><th>Uso</th></tr></thead>
+          <tbody>
+            <tr><td><code>ejercitador_bluetooth</code></td><td>Programa principal del equipo</td></tr>
+            <tr><td><code>calibrar_fuerza</code></td><td>Calibración con un peso conocido desde el Monitor Serie</td></tr>
+            <tr><td><code>diagnostico</code></td><td>Lee el HX711 directamente para verificar conexiones y la celda</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="sec" id="interfaz">
+      <div class="sec-h"><b>05</b><h2>Interfaz</h2></div>
+      <p>Aplicación web que se conecta al equipo con Web Bluetooth desde Chrome o Edge, en Android, Windows o Mac.</p>
+      <ul>
+        <li><strong>Lectura en vivo:</strong> peso, fuerza y tiempo sostenido, barra con la meta marcada y gráfica de los últimos 30 segundos.</li>
+        <li><strong>Metas ajustables:</strong> fuerza objetivo, tiempo por repetición, repeticiones por serie y descanso.</li>
+        <li><strong>Recomendaciones en tiempo real:</strong> intensidad, tiempo restante, descanso entre series con cuenta regresiva, detección de cansancio (caída de la fuerza de 20 % o más) y sugerencia de progresión.</li>
+        <li><strong>Registro de repeticiones:</strong> pico, promedio, duración, estabilidad y cumplimiento de la meta.</li>
+        <li><strong>Informe PDF</strong> con nombre, cédula, fecha y número de sesión, gráfica completa, tabla de repeticiones, conclusiones y observaciones. Se genera en el mismo dispositivo: los datos del paciente no se envían ni se almacenan.</li>
+      </ul>
+    </section>
+
+    <section class="sec" id="resultados">
+      <div class="sec-h"><b>06</b><h2>Pruebas y resultados</h2></div>
+      <div class="figures">
+        <div class="fig"><b>0 – 20 kg</b><span>Rango de medición</span></div>
+        <div class="fig"><b>0,01 kg</b><span>Resolución mostrada</span></div>
+        <div class="fig"><b>2,27 kg</b><span>Peso de calibración</span></div>
+        <div class="fig"><b>≈ 5 Hz</b><span>Envío por Bluetooth</span></div>
+      </div>
+      <p>La celda se calibró con un peso conocido de 2,27 kg, que dio un factor de 133 393,39 cuentas por kilogramo. Con ese factor el equipo reproduce el peso de calibración y la fuerza equivalente (22,3 N).</p>
+      <h3>Problemas resueltos durante la puesta en marcha</h3>
+      <ul>
+        <li><strong>Sin lectura del sensor:</strong> un programa de diagnóstico que lee el HX711 sin librerías confirmó que los pines DT y SCK estaban en GPIO distintos a los del código. Se corrigió la asignación.</li>
+        <li><strong>Valores negativos:</strong> aparecían cuando el cero se hacía con la mano en el agarre. Se limitó la salida a cero y se agregó el botón "Poner en cero" en la aplicación.</li>
+        <li><strong>Carga del programa:</strong> la placa no entraba sola en modo de programación; se documentó el uso del botón BOOT.</li>
+      </ul>
+      <p class="note">La calibración es de un solo punto. Las recomendaciones de la aplicación son orientativas, se basan solo en fuerza y tiempo, y no reemplazan la valoración del fisioterapeuta.</p>
+    </section>
+
+    <section class="sec" id="galeria">
+      <div class="sec-h"><b>07</b><h2>Galería</h2></div>
+      <div class="gallery">
+        <figure><a href="../img/portada.jpg" target="_blank" rel="noopener"><img src="../img/portada.jpg" alt="Equipo Digiflex completo" loading="lazy"></a><figcaption>Equipo completo</figcaption></figure>
+        <figure><a href="../img/app-celular.jpg" target="_blank" rel="noopener"><img src="../img/app-celular.jpg" alt="Aplicación web en el celular durante una repetición" loading="lazy"></a><figcaption>Aplicación en el celular</figcaption></figure>
+        <figure><a href="../img/informe-ejemplo.jpg" target="_blank" rel="noopener"><img src="../img/informe-ejemplo.jpg" alt="Primera página de un informe de sesión de ejemplo" loading="lazy"></a><figcaption>Informe PDF (datos de ejemplo)</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="sec" id="archivos">
+      <div class="sec-h"><b>08</b><h2>Archivos</h2></div>
+      <div class="files">
+        <a class="file" href="../"><strong>Panel en vivo</strong><span>Aplicación web por Bluetooth</span></a>
+        <a class="file" href="https://github.com/Nostec-Dev/maker-projects/tree/main/01-ejercitador-fuerza/firmware" target="_blank" rel="noopener"><strong>Firmware</strong><span>Programa principal, calibración y diagnóstico</span></a>
+        <a class="file" href="https://github.com/Nostec-Dev/maker-projects/blob/main/01-ejercitador-fuerza/README.md" target="_blank" rel="noopener"><strong>README del proyecto</strong><span>Conexiones y guía de uso</span></a>
+        <a class="file" href="https://github.com/Nostec-Dev/maker-projects/tree/main/01-ejercitador-fuerza" target="_blank" rel="noopener"><strong>Carpeta completa</strong><span>Código fuente en GitHub</span></a>
+      </div>
+    </section>
+  </main>
+</div>
+
+<footer>
+  <div class="inner">
+    <span>Hugo Andrés Llanos Benítez · Nostec</span>
+    <a href="../../">Volver al portafolio</a>
+  </div>
+</footer>
+
+<script>
+// Resalta en el indice la seccion que se esta leyendo
+(function () {
+  const links = Array.from(document.querySelectorAll("#toc a"));
+  const secs = links.map((a) => document.querySelector(a.getAttribute("href")));
+  if (!("IntersectionObserver" in window)) return;
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (!e.isIntersecting) return;
+      const i = secs.indexOf(e.target);
+      links.forEach((a, j) => a.classList.toggle("on", i === j));
+    });
+  }, { rootMargin: "-40% 0px -55% 0px" });
+  secs.forEach((s) => s && io.observe(s));
+})();
+</script>
+</body>
+</html>

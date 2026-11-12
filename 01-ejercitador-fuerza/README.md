@@ -1,4 +1,7 @@
-# P01 · Ejercitador de fuerza
+# P01 · Digiflex
+
+**Documentación completa:** https://nostec-dev.github.io/maker-projects/01-ejercitador-fuerza/documentacion/  
+**Panel en vivo:** https://nostec-dev.github.io/maker-projects/01-ejercitador-fuerza/
 
 Ejercitador de agarre para rehabilitación. Una celda de carga de 20 kg mide la fuerza; el ESP32 la muestra en una pantalla OLED y la envía por Bluetooth a una página web con lecturas en vivo y recomendaciones.
 

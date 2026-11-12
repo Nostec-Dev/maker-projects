@@ -334,8 +334,8 @@ footer a:hover { color: var(--ink); }
   <section id="proyectos" aria-labelledby="t-proyectos">
     <div class="inner">
       <span class="tag"><span class="ref">J2</span> Maker Projects</span>
-      <h2 class="sec" id="t-proyectos">Otros proyectos</h2>
-      <p class="sec-lead">Desarrollos de instrumentación, conectividad e interfaces web, cada uno con su firmware y documentación técnica.</p>
+      <h2 class="sec" id="t-proyectos">Desarrollos a medida</h2>
+      <p class="sec-lead">Proyectos desarrollados por encargo bajo la marca Nostec, documentados con su hardware, firmware e interfaz.</p>
       <div class="toolbar">
         <div class="filters" id="filters" role="group" aria-label="Filtrar por categoría"></div>
         <div class="search">
@@ -423,7 +423,8 @@ const PROYECTOS = [
     fecha: "2026-11",
     resumen: "Dispositivo de rehabilitación que mide la fuerza de agarre con una celda de carga de 20 kg. Presenta fuerza y tiempo sostenido en pantalla OLED y en una aplicación web vía Bluetooth, con recomendaciones en tiempo real e informe PDF por sesión.",
     tecnologias: ["ESP32", "HX711", "OLED I2C", "Bluetooth BLE"],
-    abrir: "Abrir panel en vivo",
+    doc: "documentacion/",             // pagina de documentacion dentro de la carpeta
+    app: "Panel en vivo",              // opcional: si el proyecto tiene aplicacion en la raiz de la carpeta
   },
 ];
 // ==============================================================
@@ -485,7 +486,7 @@ function pintar() {
   lista.forEach((p) => {
     const card = el("article", { class: "card" });
     if (p.foto) {
-      const shot = el("a", { class: "shot", href: p.carpeta + "/", tabindex: "-1", "aria-hidden": "true" });
+      const shot = el("a", { class: "shot", href: p.carpeta + "/" + (p.doc || ""), tabindex: "-1", "aria-hidden": "true" });
       shot.append(el("img", { src: p.carpeta + "/" + p.foto, alt: "", loading: "lazy" }));
       card.append(shot);
     }
@@ -496,7 +497,8 @@ function pintar() {
     const tags = el("div", { class: "tags" });
     p.tecnologias.forEach((t) => tags.append(el("span", {}, t)));
     const links = el("div", { class: "links" });
-    links.append(el("a", { class: "primary", href: p.carpeta + "/" }, p.abrir || "Abrir página"));
+    links.append(el("a", { class: "primary", href: p.carpeta + "/" + (p.doc || "") }, "Ver proyecto"));
+    if (p.app) links.append(el("a", { href: p.carpeta + "/" }, p.app));
     const codigo = enlaceCodigo(p.carpeta);
     if (codigo) links.append(el("a", { href: codigo, target: "_blank", rel: "noopener" }, "Código"));
     card.append(top, el("h3", {}, p.nombre), el("div", { class: "meta" }, [p.area, fecha].filter(Boolean).join(" · ")), el("p", {}, p.resumen), tags, links);
