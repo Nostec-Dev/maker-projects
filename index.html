@@ -3,23 +3,22 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Colección de proyectos electrónicos de Nostec: microcontroladores, sensores, pantallas y conexión con el celular.">
-<title>Maker Projects</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Nostec Maker Projects</title>
+<meta name="description" content="Hugo Llanos · Nostec. Diseño de placas electrónicas, firmware para ESP32 y prototipos con sensores.">
 <link rel="icon" href="https://avatars.githubusercontent.com/u/182430294?v=4&amp;s=64">
 <link rel="apple-touch-icon" href="https://avatars.githubusercontent.com/u/182430294?v=4&amp;s=180">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Maker Projects · Nostec">
-<meta property="og:description" content="Colección de proyectos electrónicos: microcontroladores, sensores, pantallas y conexión con el celular.">
+<meta property="og:title" content="Hugo Llanos · Nostec">
+<meta property="og:description" content="Diseño de placas electrónicas, firmware para ESP32 y prototipos con sensores.">
 <meta property="og:url" content="https://nostec-dev.github.io/maker-projects/">
-<meta property="og:image" content="https://nostec-dev.github.io/maker-projects/img-compartir.jpg">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
+<meta property="og:image" content="https://nostec-dev.github.io/maker-projects/img/compartir.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
-/* Indice tecnico oscuro: encabezado sobre rejilla de puntos, fichas sobrias, etiquetas en monoespaciada */
+/* Portafolio oscuro tipo plano de placa: secciones marcadas con designadores (U1, J2, R3...), acento azul de mascara y dorado de pads */
 :root {
   --bg: #07090C;
   --surface: #0D1117;
@@ -31,42 +30,126 @@
   --faint: #5A6472;
   --accent: #5EA8E8;
   --accent-ink: #06121F;
+  --pad: #D4A84B;
+  --pad-ink: #1A1305;
   --good: #46C08A;
   --warn: #D9A441;
   --font-sans: "IBM Plex Sans", "Segoe UI", Roboto, system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  --gutter-l: max(20px, env(safe-area-inset-left, 0px));
+  --gutter-r: max(20px, env(safe-area-inset-right, 0px));
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 html, body { margin: 0; }
 body {
   background: var(--bg); color: var(--ink);
   font: 15px/1.6 var(--font-sans);
   -webkit-font-smoothing: antialiased;
 }
-.band {
-  border-bottom: 1px solid var(--line);
-  background-color: var(--bg);
-  background-image: radial-gradient(var(--line-strong) 1px, transparent 1px);
-  background-size: 22px 22px;
-  background-position: -11px -11px;
-}
-.inner {
-  max-width: 1040px; margin: 0 auto;
-  padding-left: max(20px, env(safe-area-inset-left, 0px));
-  padding-right: max(20px, env(safe-area-inset-right, 0px));
-}
-header .inner { padding-block: 56px 40px; display: grid; gap: 14px; }
-.brandrow { display: flex; align-items: center; gap: 12px; }
-.logo { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line-strong); background: var(--surface-2); object-fit: cover; }
-.eyebrow { font: 500 12px/1 var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); }
-h1 { margin: 0; font: 600 clamp(34px, 6vw, 48px)/1.08 var(--font-sans); letter-spacing: -0.02em; text-wrap: balance; }
-.lead { margin: 0; color: var(--muted); font-size: 17px; max-width: 60ch; }
-.facts { display: flex; flex-wrap: wrap; gap: 8px 28px; margin-top: 10px; font: 400 13px/1.4 var(--font-mono); color: var(--faint); }
-.facts b { color: var(--ink); font-weight: 500; font-variant-numeric: tabular-nums; }
+a { color: inherit; }
+button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.inner { max-width: 1080px; margin: 0 auto; padding-left: var(--gutter-l); padding-right: var(--gutter-r); }
 
-main .inner { padding-block: 28px 48px; display: grid; gap: 20px; }
-.toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+/* Barra superior */
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--bg); }
+.nav {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+.nav .inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 12px; }
+.brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font: 600 15px/1 var(--font-sans); letter-spacing: 0.02em; }
+.brand img { width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--line-strong); background: var(--surface-2); object-fit: cover; }
+.nav ul { display: flex; gap: 4px; list-style: none; margin: 0; padding: 0; }
+.nav ul a { display: block; padding: 8px 10px; border-radius: 6px; text-decoration: none; font-size: 14px; color: var(--muted); }
+.nav ul a:hover { color: var(--ink); background: var(--surface); }
+@media (max-width: 640px) { .nav ul li:not(:last-child) { display: none; } }
+
+/* Etiquetas de seccion con designador */
+.tag { display: inline-flex; align-items: center; gap: 10px; font: 500 12px/1 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.ref {
+  font: 500 11px/1 var(--font-mono); letter-spacing: 0.04em; color: var(--pad-ink); background: var(--pad);
+  padding: 4px 6px; border-radius: 3px;
+}
+h2.sec { margin: 10px 0 0; font: 600 clamp(26px, 4vw, 34px)/1.15 var(--font-sans); letter-spacing: -0.02em; text-wrap: balance; }
+.sec-lead { margin: 8px 0 0; color: var(--muted); max-width: 62ch; }
+section { border-bottom: 1px solid var(--line); }
+section > .inner { padding-block: 64px; }
+
+/* Portada */
+.hero {
+  background-image: radial-gradient(var(--line-strong) 1px, transparent 1px);
+  background-size: 22px 22px; background-position: -11px -11px;
+}
+.hero .inner { padding-block: 80px 64px; display: grid; gap: 18px; }
+.hero h1 { margin: 0; font: 600 clamp(40px, 8vw, 72px)/1.02 var(--font-sans); letter-spacing: -0.035em; }
+.hero h1 span { display: block; color: var(--muted); font-weight: 400; font-size: 0.5em; letter-spacing: -0.02em; margin-top: 10px; }
+.hero p { margin: 0; max-width: 58ch; font-size: 17px; color: var(--muted); }
+.cta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+.btn {
+  display: inline-flex; align-items: center; gap: 8px; text-decoration: none;
+  font: 500 14px/1 var(--font-sans); padding: 12px 16px; border-radius: 6px;
+  border: 1px solid var(--line-strong); color: var(--ink); background: var(--surface);
+}
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn.primary:hover { filter: brightness(1.08); }
+.tools { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 18px; }
+.chip { font: 12px/1 var(--font-mono); padding: 7px 9px; border-radius: 4px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); }
+
+/* Proyecto destacado */
+.feature { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 40px; margin-top: 36px; align-items: start; }
+@media (max-width: 880px) { .feature { grid-template-columns: minmax(0, 1fr); gap: 28px; } }
+.board {
+  position: relative; margin: 0; border: 1px solid var(--line); border-radius: 10px; overflow: hidden;
+  background: radial-gradient(120% 90% at 50% 40%, #13202F 0%, var(--surface) 70%);
+  padding: 22px;
+}
+.board .stage { position: relative; }
+.board img { display: block; width: 100%; height: auto; max-width: 100%; border-radius: 4px; }
+.pin {
+  position: absolute; transform: translate(-50%, -50%);
+  width: 24px; height: 24px; border-radius: 50%;
+  display: grid; place-items: center;
+  font: 600 11px/1 var(--font-mono); color: var(--pad-ink); background: var(--pad);
+  box-shadow: 0 0 0 3px rgba(7, 9, 12, 0.75), 0 0 0 5px rgba(212, 168, 75, 0.35);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.pin.on { transform: translate(-50%, -50%) scale(1.25); box-shadow: 0 0 0 3px rgba(7, 9, 12, 0.75), 0 0 0 8px rgba(212, 168, 75, 0.45); }
+.board figcaption { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 14px; font: 12px/1.4 var(--font-mono); color: var(--faint); }
+.parts { list-style: none; margin: 14px 0 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px 18px; }
+@media (max-width: 480px) { .parts { grid-template-columns: minmax(0, 1fr); } }
+.parts li { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 10px; align-items: baseline; padding: 7px 4px; border-radius: 6px; cursor: default; }
+.parts li:hover, .parts li.on { background: var(--surface-2); }
+.parts b { font: 600 11px/1 var(--font-mono); color: var(--pad); text-align: right; }
+.parts span { font-size: 14px; }
+.parts small { display: block; color: var(--faint); font: 12px/1.4 var(--font-mono); }
+
+.case { display: grid; gap: 26px; }
+.case h3 { margin: 0; font: 600 26px/1.2 var(--font-sans); letter-spacing: -0.02em; }
+.case .kicker { font: 12px/1.4 var(--font-mono); color: var(--faint); margin-top: 4px; }
+.case h4 { margin: 0 0 6px; font: 500 12px/1 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
+.case p { margin: 0; color: var(--muted); }
+.case ul { margin: 0; padding-left: 18px; color: var(--muted); display: grid; gap: 5px; }
+.case ul strong { color: var(--ink); font-weight: 500; }
+.specs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+@media (max-width: 480px) { .specs { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.spec { padding: 12px 14px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--surface); margin: 0 -1px -1px 0; }
+.spec b { display: block; font: 600 18px/1.2 var(--font-sans); letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+.spec span { font: 11.5px/1.3 var(--font-mono); color: var(--faint); }
+.progress { display: grid; gap: 8px; }
+.step { display: grid; grid-template-columns: 14px minmax(0, 1fr) auto; gap: 10px; align-items: center; font-size: 14px; }
+.step i { width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--faint); }
+.step[data-s="done"] i { background: var(--good); border-color: var(--good); }
+.step[data-s="doing"] i { border-color: var(--warn); background: radial-gradient(var(--warn) 40%, transparent 45%); }
+.step em { font: normal 12px/1 var(--font-mono); color: var(--faint); }
+
+/* Proyectos */
+.toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-top: 28px; }
 .filters { display: flex; flex-wrap: wrap; gap: 6px; }
 .filters button {
   font: 500 12px/1 var(--font-mono); letter-spacing: 0.04em; padding: 10px 14px; cursor: pointer;
@@ -74,91 +157,227 @@ main .inner { padding-block: 28px 48px; display: grid; gap: 20px; }
 }
 .filters button:hover { color: var(--ink); }
 .filters button[aria-pressed="true"] { background: var(--surface-2); color: var(--ink); border-color: var(--accent); }
-.search { display: flex; align-items: center; gap: 12px; }
-input[type="search"] { flex: 0 1 290px; min-width: 0; }
-.search { flex: 0 1 380px; justify-content: flex-end; }
-@media (max-width: 520px) { .search { flex-basis: 100%; } input[type="search"] { flex-grow: 1; } }
+.search { display: flex; align-items: center; gap: 12px; flex: 0 1 380px; justify-content: flex-end; }
 input[type="search"] {
-  font: 14px var(--font-sans); padding: 9px 12px; border-radius: 6px; width: 100%;
+  flex: 0 1 290px; min-width: 0; width: 100%;
+  font: 14px var(--font-sans); padding: 9px 12px; border-radius: 6px;
   border: 1px solid var(--line); background: var(--surface); color: var(--ink);
 }
 input[type="search"]::placeholder { color: var(--faint); }
+@media (max-width: 520px) { .search { flex-basis: 100%; } input[type="search"] { flex-grow: 1; } }
 .count { font: 12px var(--font-mono); color: var(--faint); font-variant-numeric: tabular-nums; white-space: nowrap; }
-button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 310px), 1fr)); gap: 16px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 310px), 1fr)); gap: 16px; margin-top: 20px; }
 .card {
-  background: var(--surface); border: 1px solid var(--line); border-radius: 8px;
-  padding: 20px; display: grid; gap: 14px; align-content: start; min-width: 0;
-  transition: border-color 0.15s ease;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 8px; overflow: hidden;
+  padding: 20px; display: grid; gap: 14px; align-content: start; min-width: 0; transition: border-color 0.15s ease;
 }
 .card:hover { border-color: var(--line-strong); }
+.shot { display: block; margin: -20px -20px 0; aspect-ratio: 4 / 3; max-width: calc(100% + 40px); background: var(--surface-2); border-bottom: 1px solid var(--line); overflow: hidden; }
+.shot img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease; }
+.card:hover .shot img { transform: scale(1.03); }
 .card-top { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; font: 500 12px/1.4 var(--font-mono); }
-.code { color: var(--accent); letter-spacing: 0.06em; }
+.code { color: var(--pad); letter-spacing: 0.06em; }
 .cat { color: var(--muted); letter-spacing: 0.04em; }
-.shot { margin: -20px -20px 0; aspect-ratio: 4 / 3; overflow: hidden; border-bottom: 1px solid var(--line); border-radius: 8px 8px 0 0; background: var(--surface-2); max-width: none; }
-.shot img { display: block; width: 100%; height: 100%; object-fit: cover; max-width: 100%; }
-.card h2 { margin: 0; font: 600 20px/1.25 var(--font-sans); letter-spacing: -0.01em; text-wrap: balance; }
+.card h3 { margin: 0; font: 600 20px/1.25 var(--font-sans); letter-spacing: -0.01em; text-wrap: balance; }
 .meta { font: 12px/1.4 var(--font-mono); color: var(--faint); margin-top: -8px; }
 .card p { margin: 0; color: var(--muted); font-size: 14.5px; }
 .tags { display: flex; flex-wrap: wrap; gap: 6px; }
 .tags span { font: 12px/1 var(--font-mono); padding: 6px 8px; border-radius: 4px; border: 1px solid var(--line); color: var(--ink); background: var(--surface-2); }
 .links { display: flex; flex-wrap: wrap; gap: 8px; padding-top: 14px; border-top: 1px solid var(--line); }
-.links a {
-  font: 500 13.5px/1 var(--font-sans); padding: 10px 14px; border-radius: 6px; text-decoration: none;
-  border: 1px solid var(--line-strong); color: var(--ink);
-}
+.links a { font: 500 13.5px/1 var(--font-sans); padding: 10px 14px; border-radius: 6px; text-decoration: none; border: 1px solid var(--line-strong); color: var(--ink); }
 .links a:hover { border-color: var(--accent); }
 .links a.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
-.links a.primary:hover { filter: brightness(1.08); }
 .empty { color: var(--faint); font: 13px var(--font-mono); padding: 24px 0; }
 
-footer { border-top: 1px solid var(--line); }
-footer .inner { padding-block: 22px 32px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; font: 12px var(--font-mono); color: var(--faint); }
-.foot-brand { display: inline-flex; align-items: center; gap: 8px; }
-.foot-brand img { width: 20px; height: 20px; border-radius: 50%; }
-footer a { color: var(--muted); text-decoration: none; }
-footer a:hover { color: var(--ink); }
-@media (prefers-reduced-motion: reduce) { .card { transition: none; } }
+/* Sobre mi y habilidades */
+.about { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 48px; margin-top: 28px; }
+@media (max-width: 880px) { .about { grid-template-columns: minmax(0, 1fr); gap: 32px; } }
+.about-text { display: grid; gap: 14px; align-content: start; }
+.about-text p { margin: 0; color: var(--muted); max-width: 60ch; }
+.about-text p strong { color: var(--ink); font-weight: 500; }
+.skills { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 520px) { .skills { grid-template-columns: minmax(0, 1fr); } }
+.skill { border: 1px solid var(--line); border-radius: 8px; background: var(--surface); padding: 16px; display: grid; gap: 10px; align-content: start; }
+.skill h3 { margin: 0; font: 500 12px/1.3 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+.skill ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.skill li { font: 12px/1 var(--font-mono); padding: 6px 8px; border-radius: 4px; border: 1px solid var(--line); background: var(--surface-2); }
+
+/* Contacto */
+.contact { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 24px; align-items: end; margin-top: 8px; }
+@media (max-width: 640px) { .contact { grid-template-columns: minmax(0, 1fr); } }
+.contact-links { display: flex; flex-wrap: wrap; gap: 10px; }
+
+footer .inner { padding-block: 24px max(32px, env(safe-area-inset-bottom, 0px)); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; font: 12px var(--font-mono); color: var(--faint); }
+@media (prefers-reduced-motion: reduce) { .card, .shot img, .pin { transition: none; } }
 </style>
 </head>
 <body>
-<header class="band">
+
+<nav class="nav" aria-label="Principal">
   <div class="inner">
-    <div class="brandrow">
-      <img class="logo" src="https://avatars.githubusercontent.com/u/182430294?v=4&amp;s=160" alt="Logo de Nostec" width="44" height="44">
-      <span class="eyebrow">Nostec / Maker Projects</span>
+    <a class="brand" href="#inicio"><img src="https://avatars.githubusercontent.com/u/182430294?v=4&amp;s=96" alt="" width="30" height="30">Nostec</a>
+    <ul>
+      <li><a href="#destacado">Destacado</a></li>
+      <li><a href="#proyectos">Proyectos</a></li>
+      <li><a href="#sobre-mi">Sobre mí</a></li>
+      <li><a href="#contacto">Contacto</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero" id="inicio">
+  <div class="inner">
+    <span class="tag"><span class="ref">J1</span> Nostec · Ingeniería electrónica</span>
+    <h1>Hugo Llanos<span>Diseño de placas, firmware y prototipos electrónicos</span></h1>
+    <p>Llevo ideas desde el esquemático hasta una placa lista para fabricar y el código que la hace funcionar: microcontroladores ESP32, sensores, control de motores y conexión con el celular.</p>
+    <div class="cta">
+      <a class="btn primary" href="#destacado">Ver proyecto destacado</a>
+      <a class="btn" href="#proyectos">Todos los proyectos</a>
     </div>
-    <h1>Maker Projects</h1>
-    <p class="lead">Colección de proyectos electrónicos con microcontroladores, sensores, pantallas y conexión con el celular. Cada proyecto tiene su código, su página, su firmware y su documentación.</p>
-    <div class="facts" id="facts"></div>
+    <div class="tools" aria-label="Herramientas">
+      <span class="chip">EasyEDA</span><span class="chip">ESP32 / ESP32-S3</span><span class="chip">Arduino · PlatformIO</span><span class="chip">PSoC 5LP</span><span class="chip">Bluetooth BLE</span><span class="chip">Control PID</span><span class="chip">JLCPCB</span>
+    </div>
   </div>
 </header>
 
 <main>
-  <div class="inner">
-    <div class="toolbar">
-      <div class="filters" id="filters" role="group" aria-label="Filtrar por categoría"></div>
-      <div class="search">
-        <input type="search" id="q" placeholder="Buscar proyecto o tecnología" aria-label="Buscar proyecto o tecnología">
-        <span class="count" id="count"></span>
+  <section id="destacado" aria-labelledby="t-destacado">
+    <div class="inner">
+      <span class="tag"><span class="ref">U1</span> Proyecto destacado</span>
+      <h2 class="sec" id="t-destacado">NST-FRC32: recicladora de botellas PET en filamento</h2>
+      <p class="sec-lead">Máquina de código abierto que convierte botellas de plástico en filamento para impresión 3D. Diseñé su placa de control principal.</p>
+
+      <div class="feature">
+        <figure class="board">
+          <div class="stage" id="stage">
+            <img src="img/nst-frc32-placa.png" alt="Render 3D de la placa principal NST-FRC32 con el módulo ESP32-S3, dos zócalos para drivers de motor, MOSFETs, borneras y conector USB-C" width="687" height="669">
+          </div>
+          <figcaption><span>Placa principal · V1.0 · render 3D</span><span>Toca un número</span></figcaption>
+          <ol class="parts" id="parts"></ol>
+        </figure>
+
+        <div class="case">
+          <div>
+            <h3>Placa principal NST-FRC32</h3>
+            <div class="kicker">Hardware open source · Diseñado por Hugo Llanos · Nostec</div>
+          </div>
+
+          <div class="specs">
+            <div class="spec"><b>ESP32-S3</b><span>16 MB flash · 8 MB PSRAM</span></div>
+            <div class="spec"><b>12 / 24 V</b><span>Entrada DC</span></div>
+            <div class="spec"><b>2 motores</b><span>Drivers A4988</span></div>
+            <div class="spec"><b>2 salidas</b><span>MOSFET de potencia</span></div>
+            <div class="spec"><b>73</b><span>Componentes</span></div>
+            <div class="spec"><b>≈ 13 USD</b><span>En componentes (BOM)</span></div>
+          </div>
+
+          <div>
+            <h4>El reto</h4>
+            <p>Controlar al mismo tiempo un calentador con temperatura estable, el motor que jala el plástico, el que enrolla el carrete y un sensor que mide el grosor del filamento, todo en una placa segura de alimentar a 12 o 24 V.</p>
+          </div>
+
+          <div>
+            <h4>Decisiones de diseño</h4>
+            <ul>
+              <li><strong>Protección de entrada:</strong> diodo TVS SMCJ28A contra picos de voltaje y protección ESD en el USB-C y en las entradas.</li>
+              <li><strong>Dos etapas de alimentación:</strong> fuente conmutada a 5 V (SXL1509) y regulador a 3,3 V (AMS1117) para el ESP32.</li>
+              <li><strong>Potencia:</strong> MOSFETs AOD4184A para el calentador y el ventilador, con control PID de temperatura por termistor.</li>
+              <li><strong>Motores:</strong> zócalos para dos drivers A4988 con selección de micropasos por interruptores.</li>
+              <li><strong>Lista para fabricar:</strong> Gerber, BOM y archivo de posiciones para ensamblaje SMT en JLCPCB.</li>
+            </ul>
+          </div>
+
+          <div>
+            <h4>Avance</h4>
+            <div class="progress">
+              <div class="step" data-s="done"><i></i><span>Hardware: placa principal</span><em>V1.0 lista</em></div>
+              <div class="step" data-s="doing"><i></i><span>Firmware: PID, motores y sensores</span><em>En desarrollo</em></div>
+              <div class="step" data-s="next"><i></i><span>Diseño mecánico: piezas 3D</span><em>Pendiente</em></div>
+            </div>
+          </div>
+
+          <div class="cta">
+            <a class="btn primary" href="https://github.com/Nostec-Dev/NST-FRC32" target="_blank" rel="noopener">Ver repositorio</a>
+            <a class="btn" href="https://github.com/Nostec-Dev/NST-FRC32/blob/main/hardware/NST-FRC32_Mainboard_Schematic.pdf" target="_blank" rel="noopener">Esquemático (PDF)</a>
+            <a class="btn" href="https://github.com/Nostec-Dev/NST-FRC32/tree/main/hardware" target="_blank" rel="noopener">Archivos de fabricación</a>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="grid" id="grid"></div>
-    <div class="empty" id="empty" hidden>No hay proyectos con ese filtro.</div>
-  </div>
+  </section>
+
+  <section id="proyectos" aria-labelledby="t-proyectos">
+    <div class="inner">
+      <span class="tag"><span class="ref">J2</span> Maker Projects</span>
+      <h2 class="sec" id="t-proyectos">Proyectos cortos</h2>
+      <p class="sec-lead">Prototipos terminados con sensores, pantallas y conexión con el celular. Cada uno tiene su página, su firmware y su documentación.</p>
+      <div class="toolbar">
+        <div class="filters" id="filters" role="group" aria-label="Filtrar por categoría"></div>
+        <div class="search">
+          <input type="search" id="q" placeholder="Buscar proyecto o tecnología" aria-label="Buscar proyecto o tecnología">
+          <span class="count" id="count"></span>
+        </div>
+      </div>
+      <div class="grid" id="grid"></div>
+      <div class="empty" id="empty" hidden>No hay proyectos con esa búsqueda.</div>
+    </div>
+  </section>
+
+  <section id="sobre-mi" aria-labelledby="t-sobre">
+    <div class="inner">
+      <span class="tag"><span class="ref">R3</span> Sobre mí</span>
+      <div class="about">
+        <div class="about-text">
+          <h2 class="sec" id="t-sobre">Quién soy</h2>
+          <p>Soy <strong>Hugo Llanos</strong>, estudiante de Ingeniería Electrónica en la Universidad Surcolombiana. Con <strong>Nostec</strong> diseño placas y prototipos: desde el esquemático y la PCB hasta el firmware y la interfaz con la que se usan.</p>
+          <p>Me interesan los sistemas embebidos, la electrónica de potencia y la instrumentación. Estoy abierto a proyectos y prácticas en hardware y sistemas embebidos.</p>
+        </div>
+        <div class="skills" aria-label="Habilidades">
+          <div class="skill"><h3>Diseño de PCB</h3><ul><li>EasyEDA</li><li>Esquemáticos</li><li>Gerber · BOM · CPL</li><li>Protección ESD y TVS</li><li>Ensamblaje SMT</li></ul></div>
+          <div class="skill"><h3>Firmware</h3><ul><li>C / C++</li><li>Arduino</li><li>PlatformIO</li><li>ESP32 · ESP32-S3</li><li>PSoC 5LP</li><li>Bluetooth BLE</li></ul></div>
+          <div class="skill"><h3>Potencia y control</h3><ul><li>Convertidores DC-DC</li><li>MOSFET</li><li>Motores paso a paso</li><li>Control PID</li></ul></div>
+          <div class="skill"><h3>Sensores</h3><ul><li>Celdas de carga · HX711</li><li>Efecto Hall</li><li>Gas · MQ-7</li><li>Ultrasonido</li><li>Calibración</li></ul></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contacto" aria-labelledby="t-contacto">
+    <div class="inner">
+      <span class="tag"><span class="ref">TP4</span> Contacto</span>
+      <div class="contact">
+        <div>
+          <h2 class="sec" id="t-contacto">¿Tienes un proyecto en mente?</h2>
+          <p class="sec-lead">Placas a medida, prototipos con sensores o firmware para ESP32. Escríbeme y lo revisamos.</p>
+        </div>
+        <div class="contact-links">
+          <a class="btn primary" href="https://github.com/Nostec-Dev" target="_blank" rel="noopener">GitHub · Nostec-Dev</a>
+        </div>
+      </div>
+    </div>
+  </section>
 </main>
 
 <footer>
   <div class="inner">
-    <span class="foot-brand"><img src="https://avatars.githubusercontent.com/u/182430294?v=4&amp;s=64" alt="" width="20" height="20">Nostec · Maker Projects</span>
-    <a href="https://github.com/Nostec-Dev/maker-projects" target="_blank" rel="noopener">github.com/Nostec-Dev/maker-projects</a>
+    <span>Hugo Llanos · Nostec · 2026</span>
+    <a href="https://github.com/Nostec-Dev/maker-projects" target="_blank" rel="noopener">Código de esta página</a>
   </div>
 </footer>
 
 <script>
+// ===================== PARTES DE LA PLACA (posicion en % sobre la imagen) =====================
+const PARTES = [
+  { x: 66.2, y: 63.5, nombre: "ESP32-S3", detalle: "Cerebro de la máquina, con WiFi y Bluetooth" },
+  { x: 32.8, y: 25.4, nombre: "Drivers A4988 ×2", detalle: "Motor que jala y motor del carrete" },
+  { x: 76.4, y: 16.4, nombre: "MOSFETs AOD4184A", detalle: "Calentador y ventilador" },
+  { x: 35.4, y: 62.8, nombre: "Fuente conmutada 5 V", detalle: "SXL1509 + inductor de 47 µH" },
+  { x: 15.3, y: 44.8, nombre: "Entrada 12 / 24 V", detalle: "Con diodo TVS contra picos" },
+  { x: 61.1, y: 89.7, nombre: "USB-C", detalle: "Programación, con protección ESD" },
+];
+
 // ===================== LISTA DE PROYECTOS =====================
-// Agrega un bloque por proyecto. El mas nuevo puede ir al final; la pagina los ordena por codigo.
+// Agrega un bloque por proyecto. La pagina los ordena por codigo.
 // categorias: una o varias de CATEGORIAS. foto: imagen horizontal 4:3 dentro de la carpeta del proyecto.
 const CATEGORIAS = ["Instrumentación", "IoT y Bluetooth", "Control", "Potencia", "Comunicaciones"];
 
@@ -166,12 +385,12 @@ const PROYECTOS = [
   {
     codigo: "P01",
     carpeta: "01-ejercitador-fuerza",
-    nombre: "Ejercitador de fuerza",
-    area: "Rehabilitación",
+    nombre: "Digiflex",
+    area: "Ejercitador de fuerza · Rehabilitación",
     categorias: ["Instrumentación", "IoT y Bluetooth"],
     foto: "img/portada.jpg",
     fecha: "2026-11",
-    resumen: "Mide la fuerza de agarre con una celda de 20 kg. Muestra kg, newtons y tiempo sostenido en una pantalla OLED y en el celular por Bluetooth, con recomendaciones en vivo.",
+    resumen: "Mide la fuerza de agarre con una celda de 20 kg. Muestra kg, newtons y tiempo sostenido en una pantalla OLED y en el celular por Bluetooth, con recomendaciones en vivo e informe PDF de cada sesión.",
     tecnologias: ["ESP32", "HX711", "OLED I2C", "Bluetooth BLE"],
     abrir: "Abrir panel en vivo",
   },
@@ -179,6 +398,38 @@ const PROYECTOS = [
 // ==============================================================
 
 const MESES = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];
+const $ = (id) => document.getElementById(id);
+
+function el(tag, attrs, texto) {
+  const e = document.createElement(tag);
+  Object.entries(attrs || {}).forEach(([k, v]) => e.setAttribute(k, v));
+  if (texto != null) e.textContent = texto;
+  return e;
+}
+
+// Puntos sobre la placa y su lista
+(function placa() {
+  const stage = $("stage"), lista = $("parts");
+  const pins = [], items = [];
+  function marcar(i, on) { pins[i].classList.toggle("on", on); items[i].classList.toggle("on", on); }
+  PARTES.forEach((p, i) => {
+    const pin = el("span", { class: "pin", "aria-hidden": "true" }, String(i + 1));
+    pin.style.left = p.x + "%"; pin.style.top = p.y + "%";
+    stage.append(pin); pins.push(pin);
+    const li = el("li", { tabindex: "0" });
+    const txt = el("span", {}, p.nombre);
+    txt.append(el("small", {}, p.detalle));
+    li.append(el("b", {}, String(i + 1)), txt);
+    lista.append(li); items.push(li);
+    [li, pin].forEach((n) => {
+      n.addEventListener("mouseenter", () => marcar(i, true));
+      n.addEventListener("mouseleave", () => marcar(i, false));
+    });
+    li.addEventListener("focus", () => marcar(i, true));
+    li.addEventListener("blur", () => marcar(i, false));
+    li.addEventListener("click", () => { items.forEach((_, j) => marcar(j, j === i)); });
+  });
+})();
 
 // Enlace al codigo en GitHub, deducido de la direccion de GitHub Pages
 function enlaceCodigo(carpeta) {
@@ -189,16 +440,7 @@ function enlaceCodigo(carpeta) {
   return repo ? "https://github.com/" + usuario + "/" + repo + "/tree/main/" + carpeta : null;
 }
 
-const $ = (id) => document.getElementById(id);
 let categoria = "Todos";
-
-function el(tag, attrs, texto) {
-  const e = document.createElement(tag);
-  Object.entries(attrs || {}).forEach(([k, v]) => e.setAttribute(k, v));
-  if (texto != null) e.textContent = texto;
-  return e;
-}
-
 function pintar() {
   const q = $("q").value.trim().toLowerCase();
   const lista = PROYECTOS
@@ -211,13 +453,13 @@ function pintar() {
   grid.textContent = "";
   lista.forEach((p) => {
     const card = el("article", { class: "card" });
-    const top = el("div", { class: "card-top" });
-    top.append(el("span", { class: "code" }, p.codigo), el("span", { class: "cat" }, (p.categorias || []).join(" · ")));
     if (p.foto) {
       const shot = el("a", { class: "shot", href: p.carpeta + "/", tabindex: "-1", "aria-hidden": "true" });
       shot.append(el("img", { src: p.carpeta + "/" + p.foto, alt: "", loading: "lazy" }));
       card.append(shot);
     }
+    const top = el("div", { class: "card-top" });
+    top.append(el("span", { class: "code" }, p.codigo), el("span", { class: "cat" }, (p.categorias || []).join(" · ")));
     const [anio, mes] = (p.fecha || "").split("-");
     const fecha = mes ? MESES[parseInt(mes, 10) - 1] + " " + anio : anio;
     const tags = el("div", { class: "tags" });
@@ -226,7 +468,7 @@ function pintar() {
     links.append(el("a", { class: "primary", href: p.carpeta + "/" }, p.abrir || "Abrir página"));
     const codigo = enlaceCodigo(p.carpeta);
     if (codigo) links.append(el("a", { href: codigo, target: "_blank", rel: "noopener" }, "Código"));
-    card.append(top, el("h2", {}, p.nombre), el("div", { class: "meta" }, [p.area, fecha].filter(Boolean).join(" · ")), el("p", {}, p.resumen), tags, links);
+    card.append(top, el("h3", {}, p.nombre), el("div", { class: "meta" }, [p.area, fecha].filter(Boolean).join(" · ")), el("p", {}, p.resumen), tags, links);
     grid.append(card);
   });
   $("empty").hidden = lista.length > 0;
@@ -245,15 +487,6 @@ const usadas = CATEGORIAS.filter((c) => PROYECTOS.some((p) => (p.categorias || [
   $("filters").append(b);
 });
 $("q").addEventListener("input", pintar);
-
-// Resumen del encabezado
-const anios = PROYECTOS.map((p) => (p.fecha || "").slice(0, 4)).filter(Boolean).sort();
-const dosCifras = (n) => String(n).padStart(2, "0");
-[["Proyectos", dosCifras(PROYECTOS.length)], ["Desde", anios[0] || "—"]].forEach(([k, v]) => {
-  const d = el("span", {}, k + " ");
-  d.append(el("b", {}, v));
-  $("facts").append(d);
-});
 pintar();
 </script>
 </body>

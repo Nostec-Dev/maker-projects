@@ -18,6 +18,7 @@ Cada proyecto tiene su propia dirección, por ejemplo https://nostec-dev.github.
 maker-projects/
 ├── index.html                  Página principal con la lista de proyectos
 ├── README.md                   Este archivo
+├── img/                        Imágenes de la página principal (placa NST-FRC32, vista previa)
 ├── .nojekyll                   Hace que GitHub Pages publique los archivos tal cual
 └── 01-ejercitador-fuerza/      Un proyecto = una carpeta
     ├── index.html              Página del proyecto
