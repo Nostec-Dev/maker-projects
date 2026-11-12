@@ -81,11 +81,20 @@ section { border-bottom: 1px solid var(--line); }
 section > .inner { padding-block: 64px; }
 
 /* Portada */
-.hero {
+/* Rejilla de puntos que se desliza en diagonal: avanza una celda (22 px) por ciclo, asi el bucle no se nota */
+.hero { position: relative; overflow: hidden; }
+.hero::before {
+  content: ""; position: absolute; inset: -22px 0 0 -22px; pointer-events: none;
   background-image: radial-gradient(var(--line-strong) 1px, transparent 1px);
-  background-size: 22px 22px; background-position: -11px -11px;
+  background-size: 22px 22px;
+  -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent);
+  mask-image: linear-gradient(to bottom, #000 55%, transparent);
+  animation: deriva 7s linear infinite;
+  will-change: transform;
 }
-.hero .inner { padding-block: 80px 64px; display: grid; gap: 18px; }
+@keyframes deriva { to { transform: translate(22px, 22px); } }
+@media (prefers-reduced-motion: reduce) { .hero::before { animation: none; } }
+.hero .inner { position: relative; padding-block: 80px 64px; display: grid; gap: 18px; }
 .hero h1 { margin: 0; font: 600 clamp(40px, 8vw, 72px)/1.02 var(--font-sans); letter-spacing: -0.035em; }
 .hero h1 span { display: block; color: var(--muted); font-weight: 400; font-size: 0.5em; letter-spacing: -0.02em; margin-top: 10px; }
 .hero-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; }
@@ -243,7 +252,7 @@ footer a:hover { color: var(--ink); }
 
 <header class="hero" id="inicio">
   <div class="inner">
-    <span class="tag"><span class="ref">J1</span> Nostec · Neiva, Colombia</span>
+    <span class="tag"><span class="ref">J1</span> Nostec · Colombia</span>
     <h1>Hugo Llanos<span>Desarrollo de hardware, sistemas embebidos y automatización</span></h1>
     <p>Diseño y desarrollo de equipos electrónicos de principio a fin: arquitectura del circuito, diseño de PCB, firmware para microcontroladores y prototipado mecánico en impresión 3D.</p>
     <div class="cta">
