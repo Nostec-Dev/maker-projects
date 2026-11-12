@@ -4,7 +4,7 @@ Portafolio de **Hugo Andrés Llanos Benítez** bajo la marca **Nostec**: desarro
 
 Página: https://nostec-dev.github.io/maker-projects/
 
-- **Proyecto destacado:** [NST-FRC32](https://github.com/Nostec-Dev/NST-FRC32), tarjeta de control de una recicladora de botellas PET en filamento.
+- **Proyecto en proceso:** [NST-FRC32](https://github.com/Nostec-Dev/NST-FRC32), tarjeta de control de una recicladora de botellas PET en filamento.
 - **Desarrollos a medida:** proyectos por encargo, cada uno documentado con su hardware, firmware e interfaz. No se nombra al cliente.
 
 ## Desarrollos a medida
