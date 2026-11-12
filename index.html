@@ -205,7 +205,12 @@ input[type="search"]::placeholder { color: var(--faint); }
 /* Contacto */
 .contact { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 24px; align-items: end; margin-top: 8px; }
 @media (max-width: 640px) { .contact { grid-template-columns: minmax(0, 1fr); } }
-.contact-links { display: flex; flex-wrap: wrap; gap: 10px; }
+.contact-links { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: flex-end; }
+.mail { flex-basis: 100%; display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 6px 12px; margin-bottom: 4px; }
+@media (max-width: 640px) { .contact-links, .mail { justify-content: flex-start; } }
+.mail-label { font: 500 11.5px/1 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); }
+.mail-addr { font: 500 15px/1.4 var(--font-mono); color: var(--ink); text-decoration: none; overflow-wrap: anywhere; }
+.mail-addr:hover { color: var(--accent); }
 
 footer .inner { padding-block: 24px max(32px, env(safe-area-inset-bottom, 0px)); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; font: 12px var(--font-mono); color: var(--faint); }
 .foot-links { display: flex; flex-wrap: wrap; gap: 16px; }
@@ -354,6 +359,11 @@ footer a:hover { color: var(--ink); }
           <p class="sec-lead">Placas a medida, prototipos con sensores o firmware para ESP32. Escríbeme y lo revisamos.</p>
         </div>
         <div class="contact-links">
+          <div class="mail" id="mail" hidden>
+            <span class="mail-label">Correo</span>
+            <a class="mail-addr" id="mailAddr" href="#contacto"></a>
+            <button class="btn" type="button" id="btnCopy">Copiar correo</button>
+          </div>
           <a class="btn primary" href="https://www.linkedin.com/in/nostec/" target="_blank" rel="noopener">LinkedIn</a>
           <a class="btn" href="https://github.com/Nostec-Dev" target="_blank" rel="noopener">GitHub · Nostec-Dev</a>
         </div>
@@ -492,6 +502,23 @@ const usadas = CATEGORIAS.filter((c) => PROYECTOS.some((p) => (p.categorias || [
 });
 $("q").addEventListener("input", pintar);
 pintar();
+
+// Correo de contacto: se arma aqui para que los programas de spam no lo lean del codigo
+(function correo() {
+  const dir = ["u20241220056", "usco.edu.co"].join("@");
+  const a = $("mailAddr"), b = $("btnCopy");
+  a.textContent = dir; a.href = "mailto:" + dir;
+  $("mail").hidden = false;
+  b.addEventListener("click", async () => {
+    try { await navigator.clipboard.writeText(dir); b.textContent = "Copiado"; }
+    catch (e) {
+      const r = document.createRange(); r.selectNodeContents(a);
+      const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r);
+      b.textContent = "Selecciónalo y cópialo";
+    }
+    setTimeout(() => { b.textContent = "Copiar correo"; }, 2000);
+  });
+})();
 </script>
 </body>
 </html>
