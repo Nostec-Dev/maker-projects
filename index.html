@@ -5,12 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="claude:viewport-fit-sides" content="cover">
 <title>Nostec Maker Projects</title>
-<meta name="description" content="Hugo Llanos · Nostec. Diseño de placas electrónicas, firmware para ESP32 y prototipos con sensores.">
+<meta name="description" content="Hugo Llanos · Nostec. Electrónica y mecatrónica: prototipado 3D, programación de microcontroladores y automatización.">
 <link rel="icon" href="https://avatars.githubusercontent.com/u/182430294?v=4&amp;s=64">
 <link rel="apple-touch-icon" href="https://avatars.githubusercontent.com/u/182430294?v=4&amp;s=180">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Hugo Llanos · Nostec">
-<meta property="og:description" content="Diseño de placas electrónicas, firmware para ESP32 y prototipos con sensores.">
+<meta property="og:description" content="Electrónica y mecatrónica: prototipado 3D, programación de microcontroladores y automatización.">
 <meta property="og:url" content="https://nostec-dev.github.io/maker-projects/">
 <meta property="og:image" content="https://nostec-dev.github.io/maker-projects/img/compartir.jpg">
 <meta name="twitter:card" content="summary_large_image">
@@ -88,6 +88,14 @@ section > .inner { padding-block: 64px; }
 .hero .inner { padding-block: 80px 64px; display: grid; gap: 18px; }
 .hero h1 { margin: 0; font: 600 clamp(40px, 8vw, 72px)/1.02 var(--font-sans); letter-spacing: -0.035em; }
 .hero h1 span { display: block; color: var(--muted); font-weight: 400; font-size: 0.5em; letter-spacing: -0.02em; margin-top: 10px; }
+.hero-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; }
+.open {
+  display: inline-flex; align-items: center; gap: 8px; text-decoration: none;
+  font: 500 12.5px/1 var(--font-mono); color: var(--good);
+  padding: 7px 10px; border: 1px solid color-mix(in srgb, var(--good) 35%, transparent); border-radius: 999px;
+  background: color-mix(in srgb, var(--good) 10%, transparent);
+}
+.open i { width: 7px; height: 7px; border-radius: 50%; background: var(--good); box-shadow: 0 0 0 3px color-mix(in srgb, var(--good) 25%, transparent); }
 .hero p { margin: 0; max-width: 58ch; font-size: 17px; color: var(--muted); }
 .cta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
 .btn {
@@ -235,15 +243,18 @@ footer a:hover { color: var(--ink); }
 
 <header class="hero" id="inicio">
   <div class="inner">
-    <span class="tag"><span class="ref">J1</span> Nostec · Ingeniería electrónica</span>
-    <h1>Hugo Llanos<span>Diseño de placas, firmware y prototipos electrónicos</span></h1>
-    <p>Llevo ideas desde el esquemático hasta una placa lista para fabricar y el código que la hace funcionar: microcontroladores ESP32, sensores, control de motores y conexión con el celular.</p>
+    <div class="hero-top">
+      <span class="tag"><span class="ref">J1</span> Nostec · Neiva, Colombia</span>
+      <a class="open" href="#contacto"><i></i>Disponible para trabajar</a>
+    </div>
+    <h1>Hugo Llanos<span>Electrónica y mecatrónica: prototipado 3D, microcontroladores y automatización</span></h1>
+    <p>Desarrollo proyectos completos: diseño la electrónica y la placa, programo el microcontrolador e imprimo en 3D las piezas y carcasas que lo convierten en un equipo terminado.</p>
     <div class="cta">
       <a class="btn primary" href="#destacado">Ver proyecto destacado</a>
       <a class="btn" href="#proyectos">Todos los proyectos</a>
     </div>
     <div class="tools" aria-label="Herramientas">
-      <span class="chip">EasyEDA</span><span class="chip">ESP32 / ESP32-S3</span><span class="chip">Arduino · PlatformIO</span><span class="chip">PSoC 5LP</span><span class="chip">Bluetooth BLE</span><span class="chip">Control PID</span><span class="chip">JLCPCB</span>
+      <span class="chip">ESP32 / ESP32-S3</span><span class="chip">PSoC 5LP</span><span class="chip">Arduino · PlatformIO</span><span class="chip">EasyEDA</span><span class="chip">Impresión 3D</span><span class="chip">Control PID</span><span class="chip">Bluetooth BLE</span>
     </div>
   </div>
 </header>
@@ -337,14 +348,15 @@ footer a:hover { color: var(--ink); }
       <div class="about">
         <div class="about-text">
           <h2 class="sec" id="t-sobre">Quién soy</h2>
-          <p>Soy <strong>Hugo Llanos</strong>, estudiante de Ingeniería Electrónica en la Universidad Surcolombiana. Con <strong>Nostec</strong> diseño placas y prototipos: desde el esquemático y la PCB hasta el firmware y la interfaz con la que se usan.</p>
-          <p>Me interesan los sistemas embebidos, la electrónica de potencia y la instrumentación. Estoy abierto a proyectos y prácticas en hardware y sistemas embebidos.</p>
+          <p>Soy <strong>Hugo Andrés Llanos Benítez</strong>, de la Universidad Surcolombiana en Neiva, Huila. Trabajo entre la electrónica y la mecatrónica: programo microcontroladores, diseño placas, hago prototipos en impresión 3D y desarrollo proyectos de automatización.</p>
+          <p>Con <strong>Nostec</strong> llevo cada proyecto de la idea al equipo funcionando: la placa, el firmware, la carcasa y la interfaz con la que se usa, como la recicladora NST-FRC32 o Digiflex.</p>
+          <p>Estoy buscando empleo, en modalidad híbrida en Neiva o remota.</p>
         </div>
         <div class="skills" aria-label="Habilidades">
-          <div class="skill"><h3>Diseño de PCB</h3><ul><li>EasyEDA</li><li>Esquemáticos</li><li>Gerber · BOM · CPL</li><li>Protección ESD y TVS</li><li>Ensamblaje SMT</li></ul></div>
-          <div class="skill"><h3>Firmware</h3><ul><li>C / C++</li><li>Arduino</li><li>PlatformIO</li><li>ESP32 · ESP32-S3</li><li>PSoC 5LP</li><li>Bluetooth BLE</li></ul></div>
-          <div class="skill"><h3>Potencia y control</h3><ul><li>Convertidores DC-DC</li><li>MOSFET</li><li>Motores paso a paso</li><li>Control PID</li></ul></div>
-          <div class="skill"><h3>Sensores</h3><ul><li>Celdas de carga · HX711</li><li>Efecto Hall</li><li>Gas · MQ-7</li><li>Ultrasonido</li><li>Calibración</li></ul></div>
+          <div class="skill"><h3>Microcontroladores</h3><ul><li>ESP32 · ESP32-S3</li><li>PSoC 5LP</li><li>Arduino</li><li>PlatformIO</li><li>C / C++</li><li>Bluetooth BLE</li></ul></div>
+          <div class="skill"><h3>Diseño de placas</h3><ul><li>EasyEDA</li><li>Esquemáticos</li><li>Gerber · BOM · CPL</li><li>Protección ESD y TVS</li><li>Ensamblaje SMT</li></ul></div>
+          <div class="skill"><h3>Prototipado 3D</h3><ul><li>Impresión 3D</li><li>Carcasas a medida</li><li>Piezas mecánicas</li><li>Ensamble del equipo</li></ul></div>
+          <div class="skill"><h3>Automatización y sensores</h3><ul><li>Control PID</li><li>Motores paso a paso</li><li>MOSFET · DC-DC</li><li>Celdas de carga</li><li>Efecto Hall</li><li>Ultrasonido</li></ul></div>
         </div>
       </div>
     </div>
